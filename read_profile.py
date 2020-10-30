@@ -170,9 +170,10 @@ def get_castep_all_func_prof(
     return times, n_calls
 
 
-def get_euphonic_all_func_prof(
+def get_all_func_prof(
         materials: List[str], nprocs: List[int], function_name: str,
         file_type: Optional[str] = 'cprofile',
+        direc: Optional[str] = 'euphonic',
         ignore_missing: Optional[bool] = False
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
@@ -190,7 +191,7 @@ def get_euphonic_all_func_prof(
                 fname = get_timeit_fname(mat, proc)
             else:
                 raise ValueError(f'File type {file_type} not recognised')
-            fname = os.path.join(get_dir(mat, 'euphonic', proc), fname)
+            fname = os.path.join(get_dir(mat, direc, proc), fname)
             times[i, j], n_calls[i, j] = get_func_prof_from_file(
                 fname, function_name, file_type=file_type,
                 ignore_missing=ignore_missing)
@@ -200,3 +201,5 @@ def get_euphonic_all_func_prof(
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 nprocs = [1, 2 ,4, 8, 12, 16, 24]
 times, nc = get_castep_all_func_prof(materials, nprocs, 'castep')
+
+times, nc = get_all_func_prof(['CaHgO2'], [1,2], 'run_band_structure', direc='')
