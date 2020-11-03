@@ -1,13 +1,15 @@
-cpu-bind=MASK - cn876, task  0  0 [160161]: mask 0xffffffffffff set
+cpu-bind=MASK - cn879, task  0  0 [108362]: mask 0xffffffffffff set
 --------------------------------------------------------------------------
 No OpenFabrics connection schemes reported that they were able to be
 used on a specific port.  As such, the openib BTL (OpenFabrics
 support) will be disabled for this port.
 
-  Local host:           cn876
+  Local host:           cn879
   Local device:         mlx4_0
   Local port:           1
   CPCs attempted:       rdmacm, udcm
 --------------------------------------------------------------------------
-[cn876.scarf.rl.ac.uk:160234] 15 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
-[cn876.scarf.rl.ac.uk:160234] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+
+real	11m40.152s
+user	8m24.503s
+sys	3m7.253s

@@ -4,11 +4,11 @@
 +-----------------------------------------------------------------------------+
 |   o-- <parent(s) not traced>                      1                         |
 |  /                                                                          |
-| O-> castep                                        1           1    779.63s  |
+| O-> castep                                        1           1    559.41s  |
 |    /                                                                        |
 |   o-> memory_system_initialise                    1           1      0.00s  |
 |   o-> comms_gcopy_real                            1           1      0.00s  |
-|   o-> cell_read_wrapped                           1           1      8.86s  |
+|   o-> cell_read_wrapped                           1           1      8.87s  |
 |   o-> ion_read                                    1           1      0.00s  |
 |   o-> parameters_read                             1           1      0.01s  |
 |   o-> bib_add                                     4           4      0.00s  |
@@ -18,13 +18,13 @@
 |   o-> model_continuation                          1           1     27.78s  |
 |   o-> ion_ion_initialise                          1           1      0.00s  |
 |   o-> openbc_locps_initialise                     1           1      0.00s  |
-|   o-> nlxc_initialise                             1           1      0.01s  |
+|   o-> nlxc_initialise                             1           1      0.00s  |
 |   o-> parameters_output                           1           1      0.00s  |
 |   o-> cell_output_wrapped                         1           1      0.00s  |
 |   o-> phonon_require_gs_wvfn                      1           1      0.00s  |
-|   o-> phonon_calculate                            1           1    742.76s  |
+|   o-> phonon_calculate                            1           1    522.57s  |
 |   o-> check_forces_stresses                       1           1      0.00s  |
-|   o-> model_write                                 1           1      0.20s  |
+|   o-> model_write                                 1           1      0.17s  |
 |   o-> bib_output                                  1           1      0.00s  |
 |   o-> ion_ion_exit                                1           1      0.00s  |
 |   o-> multigrid_dlmg_exit                         1           1      0.00s  |
@@ -32,7 +32,7 @@
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
-| O-> phonon_calculate                              1           1    742.76s  |
+| O-> phonon_calculate                              1           1    522.57s  |
 |    /                                                                        |
 |   o-> phonon_initialise                           1           1      0.01s  |
 |   o-> secondd_symmetry_init                       1           1      0.00s  |
@@ -47,65 +47,65 @@
 |   o-> cell_num_supercells                         1           1      0.00s  |
 |   o-> q_is_a_g                                   10          10      0.00s  |
 |   o-> cell_supercell                              1           1      0.01s  |
-|   o-> phonon_real_to_fine                     12501       12501     11.76s  |
-|   o-> phonon_enforce_dmat_sumrule             12500       12500    118.21s  |
-|   o-> phonon_prepare_and_diagonalise          12500       12500     18.94s  |
+|   o-> phonon_real_to_fine                     12501       12501     11.78s  |
+|   o-> phonon_enforce_dmat_sumrule             12500       12500    118.26s  |
+|   o-> phonon_prepare_and_diagonalise          12500       12500     18.95s  |
 |   o-> phonon_accumulate_adp                   12500       12500      0.53s  |
-|   o-> comms_send_complex                      12500       12500    592.73s  |
-|   o-> comms_send_real                         25000       25000      0.11s  |
+|   o-> comms_send_complex                      12500       12500    372.46s  |
+|   o-> comms_send_real                         25000       25000      0.12s  |
 |   o-> comms_reduce_gv_real                        1           1      0.00s  |
 |   o-> comms_reduce_bnd_real                       1           1      0.00s  |
-|   o-> comms_reduce_kp_real                        1           1      0.02s  |
+|   o-> comms_reduce_kp_real                        1           1      0.01s  |
 |   o-> cell_deallocate                             2           2      0.00s  |
 |   o-> secondd_finalise                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                        12500                         |
 |  /                                                                          |
-| O-> comms_send_complex                        12500       12500    592.73s  |
+| O-> comms_send_complex                        12500       12500    372.46s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                        12500                         |
 |  /                                                                          |
-| O-> phonon_enforce_dmat_sumrule               12500       12500    118.21s  |
+| O-> phonon_enforce_dmat_sumrule               12500       12500    118.26s  |
 |    /                                                                        |
 |   o-> phonon_mass_weight_dmat                 25000       25000      0.29s  |
-|   o-> phonon_diagonalise_d_cmplx              37500       37500     23.75s  |
-|   o-> secondd_find_acoustics                  12500       12500      1.29s  |
-|   o-> secondd_symmetrize_dmat_cmplx           12500       12500     91.17s  |
+|   o-> phonon_diagonalise_d_cmplx              37500       37500     23.74s  |
+|   o-> secondd_find_acoustics                  12500       12500      1.28s  |
+|   o-> secondd_symmetrize_dmat_cmplx           12500       12500     91.25s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_real_to_fine                     12501                         |
 |  /o-- phonon_enforce_dmat_sumrule             12500                         |
 |  /o-- phonon_prepare_and_diagonalise          12500                         |
 | |/                                                                          |
-| O-> secondd_symmetrize_dmat_cmplx             37501       37501    110.68s  |
+| O-> secondd_symmetrize_dmat_cmplx             37501       37501    110.78s  |
 |    /                                                                        |
 |   o-> two_q_is_a_g                            37501       37501      0.12s  |
-|   o-> hermitian4                              37501       37501      0.38s  |
+|   o-> hermitian4                              37501       37501      0.39s  |
 |   o-> cell_copy_symmetry                      75002       75002      0.64s  |
-|   o-> cell_reduce_symmetry_ops_wrapped        37501       37501     12.41s  |
-|   o-> secondd_group_symmetrize_dmat           37501       37501     82.70s  |
-|   o-> cell_deallocate                         37501       37501      0.15s  |
+|   o-> cell_reduce_symmetry_ops_wrapped        37501       37501     12.42s  |
+|   o-> secondd_group_symmetrize_dmat           37501       37501     82.76s  |
+|   o-> cell_deallocate                         37501       37501      0.16s  |
 |   o-> secondd_find_inversion                  37501       37501      0.13s  |
-|   o-> secondd_tr_symmetrize_dmat              37501       37501     12.78s  |
+|   o-> secondd_tr_symmetrize_dmat              37501       37501     12.79s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /                                                                          |
-| O-> secondd_group_symmetrize_dmat             37501       37501     82.70s  |
+| O-> secondd_group_symmetrize_dmat             37501       37501     82.76s  |
 |    /                                                                        |
-|   o-> cell_factor_group_symmetry_wrapped      37501       37501      0.47s  |
+|   o-> cell_factor_group_symmetry_wrapped      37501       37501      0.48s  |
 |   o-> secondd_check_equiv_ions                37501       37501      0.34s  |
-|   o-> secondd_apply_symmetry_to_dmat_ion     662587      662587     71.81s  |
+|   o-> secondd_apply_symmetry_to_dmat_ion     662587      662587     71.87s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_group_symmetrize_dmat          662587                         |
 |  /o-- secondd_tr_symmetrize_dmat              37501                         |
 | |/                                                                          |
-| O-> secondd_apply_symmetry_to_dmat_ion       700088      700088     76.00s  |
+| O-> secondd_apply_symmetry_to_dmat_ion       700088      700088     76.07s  |
 |    /                                                                        |
-|   o-> secondd_compute_atom_phases            700088      700088     24.35s  |
+|   o-> secondd_compute_atom_phases            700088      700088     24.38s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_enforce_dmat_sumrule             37500                         |
 |  /o-- phonon_prepare_and_diagonalise          12500                         |
 | |/                                                                          |
-| O-> phonon_diagonalise_d_cmplx                50000       50000     31.81s  |
+| O-> phonon_diagonalise_d_cmplx                50000       50000     31.80s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
@@ -114,13 +114,13 @@
 |   o-> model_reset                                 1           1      0.00s  |
 |   o-> comms_gcopy_logical                         4           4      0.00s  |
 |   o-> parameters_restore                          1           1      0.00s  |
-|   o-> cell_restore_wrapped                        2           2      0.12s  |
+|   o-> cell_restore_wrapped                        2           2      0.13s  |
 |   o-> comms_parallel_strategy                     1           1      0.00s  |
 |   o-> cell_allocate                               2           2      0.00s  |
 |   o-> cell_copy                                   5           5      0.00s  |
 |   o-> cell_distribute_kpoints_wrapped             3           3      0.00s  |
 |   o-> ion_initialise                              1           1     18.07s  |
-|   o-> basis_initialise                            2           2      0.68s  |
+|   o-> basis_initialise                            2           2      0.69s  |
 |   o-> model_store_dependencies                    1           1      0.00s  |
 |   o-> cell_reread                                 1           1      8.14s  |
 |   o-> comms_gcopy_real                            7           7      0.00s  |
@@ -138,16 +138,16 @@
 +-----------------------------------------------------------------------------+
 |   o-- secondd_apply_symmetry_to_dmat_ion     700088                         |
 |  /                                                                          |
-| O-> secondd_compute_atom_phases              700088      700088     24.35s  |
+| O-> secondd_compute_atom_phases              700088      700088     24.38s  |
 |    /                                                                        |
-|   o-> q_is_a_g                               650164      650164      1.96s  |
+|   o-> q_is_a_g                               650164      650164      1.97s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                        12500                         |
 |  /                                                                          |
-| O-> phonon_prepare_and_diagonalise            12500       12500     18.94s  |
+| O-> phonon_prepare_and_diagonalise            12500       12500     18.95s  |
 |    /                                                                        |
 |   o-> q_is_a_g                                25000       25000      0.08s  |
-|   o-> secondd_symmetrize_dmat_cmplx           12500       12500      9.79s  |
+|   o-> secondd_symmetrize_dmat_cmplx           12500       12500      9.80s  |
 |   o-> phonon_constrain_dmat                   12500       12500      0.04s  |
 |   o-> phonon_mass_weight_dmat                 12500       12500      0.15s  |
 |   o-> phonon_diagonalise_d_cmplx              12500       12500      8.06s  |
@@ -158,7 +158,7 @@
 |    /                                                                        |
 |   o-> ion_allocate                                1           1      0.00s  |
 |   o-> ion_atom_allocate_pspot                     6           6      0.10s  |
-|   o-> ion_atom_generate_psp                       3           3     16.47s  |
+|   o-> ion_atom_generate_psp                       3           3     16.48s  |
 |   o-> ion_set_data                                3           3      0.10s  |
 |   o-> ion_atom_deallocate_pspot                   7           7      0.00s  |
 |   o-> ion_set_psp                                 3           3      0.05s  |
@@ -168,58 +168,58 @@
 +-----------------------------------------------------------------------------+
 |   o-- ion_initialise                              3                         |
 |  /                                                                          |
-| O-> ion_atom_generate_psp                         3           3     16.47s  |
+| O-> ion_atom_generate_psp                         3           3     16.48s  |
 |    /                                                                        |
 |   o-> ion_atom_init_ae_basis                      3           3      0.00s  |
 |   o-> ion_atom_init_ae_atom                       3           3      0.00s  |
 |   o-> ion_atom_ae_scf                             3           3      0.78s  |
-|   o-> ion_atom_define_psp                         3           3      0.70s  |
-|   o-> ion_atom_construct_psp                      3           3     14.74s  |
-|   o-> ion_atom_descreen_psp                       3           3      0.25s  |
+|   o-> ion_atom_define_psp                         3           3      0.68s  |
+|   o-> ion_atom_construct_psp                      3           3     14.76s  |
+|   o-> ion_atom_descreen_psp                       3           3      0.26s  |
 |   o-> ion_atom_output_psp                         3           3      0.00s  |
 |   o-> ion_atom_basis_ae_dealloc                   3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_generate_psp                       3                         |
 |  /                                                                          |
-| O-> ion_atom_construct_psp                        3           3     14.74s  |
+| O-> ion_atom_construct_psp                        3           3     14.76s  |
 |    /                                                                        |
 |   o-> ion_atom_partial_wave                      21          21      0.00s  |
 |   o-> ion_atom_pseudise                          21          21      0.07s  |
 |   o-> ion_atom_write_pwave                        3           3      0.00s  |
-|   o-> ion_atom_radin                          61185       61185      0.90s  |
+|   o-> ion_atom_radin                          61185       61185      0.91s  |
 |   o-> ion_atom_Q_pseudise                        95          95      4.65s  |
 |   o-> ion_atom_write_beta                         3           3      0.00s  |
-|   o-> ion_atom_radial_transform                  92          92      2.55s  |
+|   o-> ion_atom_radial_transform                  92          92      2.54s  |
 |   o-> ion_atom_fermi_contact                     44          44      0.00s  |
 |   o-> ion_atom_apply_Tl                          84          84      0.00s  |
 |   o-> ion_atom_real_derivative_kind1            168         168      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /                                                                          |
-| O-> secondd_tr_symmetrize_dmat                37501       37501     12.78s  |
+| O-> secondd_tr_symmetrize_dmat                37501       37501     12.79s  |
 |    /                                                                        |
-|   o-> secondd_check_equiv_ions                37501       37501      7.85s  |
+|   o-> secondd_check_equiv_ions                37501       37501      7.86s  |
 |   o-> secondd_apply_symmetry_to_dmat_ion      37501       37501      4.20s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /                                                                          |
-| O-> cell_reduce_symmetry_ops_wrapped          37501       37501     12.41s  |
+| O-> cell_reduce_symmetry_ops_wrapped          37501       37501     12.42s  |
 |    /                                                                        |
-|   o-> cell_check_group                        37501       37501     11.75s  |
+|   o-> cell_check_group                        37501       37501     11.76s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                        12501                         |
 |  /                                                                          |
-| O-> phonon_real_to_fine                       12501       12501     11.76s  |
+| O-> phonon_real_to_fine                       12501       12501     11.78s  |
 |    /                                                                        |
 |   o-> cell_num_supercells                     12501       12501      0.04s  |
-|   o-> check_image_list                        12501       12501      0.05s  |
-|   o-> secondd_symmetrize_dmat_cmplx           12501       12501      9.72s  |
+|   o-> check_image_list                        12501       12501      0.04s  |
+|   o-> secondd_symmetrize_dmat_cmplx           12501       12501      9.74s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_reduce_symmetry_ops_wrapped        37501                         |
 |  /                                                                          |
-| O-> cell_check_group                          37501       37501     11.75s  |
+| O-> cell_check_group                          37501       37501     11.76s  |
 |    /                                                                        |
-|   o-> algor_invert_real                      625086      625086      1.88s  |
+|   o-> algor_invert_real                      625086      625086      1.89s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_read_wrapped                          64                         |
 |  /o-- cell_generate_qpoints_local                 4                         |
@@ -232,14 +232,14 @@
 |  /o-- model_continuation                          5                         |
 |  /o-- parameters_reread                           2                         |
 | |/                                                                          |
-| O-> comms_gcopy_integer                         436         436      9.63s  |
+| O-> comms_gcopy_integer                         436         436      9.65s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
-| O-> cell_read_wrapped                             1           1      8.86s  |
+| O-> cell_read_wrapped                             1           1      8.87s  |
 |    /                                                                        |
 |   o-> cell_setup_keywords                         1           1      0.00s  |
-|   o-> comms_gcopy_integer                        64          64      8.85s  |
+|   o-> comms_gcopy_integer                        64          64      8.86s  |
 |   o-> cell_allocate                               1           1      0.00s  |
 |   o-> comms_gcopy_logical                        11          11      0.00s  |
 |   o-> comms_gcopy_real                           80          80      0.00s  |
@@ -249,16 +249,16 @@
 |   o-- secondd_group_symmetrize_dmat           37501                         |
 |  /o-- secondd_tr_symmetrize_dmat              37501                         |
 | |/                                                                          |
-| O-> secondd_check_equiv_ions                  75002       75002      8.19s  |
+| O-> secondd_check_equiv_ions                  75002       75002      8.20s  |
 |    /                                                                        |
-|   o-> secondd_equiv_atoms_to_ions           1225086     1225086      3.87s  |
+|   o-> secondd_equiv_atoms_to_ions           1225086     1225086      3.88s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          1                         |
 |  /                                                                          |
 | O-> cell_reread                                   1           1      8.14s  |
 |    /                                                                        |
 |   o-> cell_setup_keywords                         1           1      0.00s  |
-|   o-> comms_gcopy_integer                        60          60      0.76s  |
+|   o-> comms_gcopy_integer                        60          60      0.77s  |
 |   o-> comms_gcopy_real                           78          78      7.37s  |
 |   o-> comms_gcopy_character                      29          29      0.00s  |
 |   o-> comms_gcopy_logical                        10          10      0.00s  |
@@ -286,19 +286,19 @@
 +-----------------------------------------------------------------------------+
 |   o-- secondd_check_equiv_ions              1225086                         |
 |  /                                                                          |
-| O-> secondd_equiv_atoms_to_ions             1225086     1225086      3.87s  |
+| O-> secondd_equiv_atoms_to_ions             1225086     1225086      3.88s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_define_psp                         3                         |
 |  /o-- ion_atom_construct_psp                     92                         |
 |  /o-- ion_initialise                              1                         |
 | |/                                                                          |
-| O-> ion_atom_radial_transform                    96          96      3.11s  |
+| O-> ion_atom_radial_transform                    96          96      3.10s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                           10                         |
 |  /o-- secondd_compute_atom_phases            650164                         |
 |  /o-- phonon_prepare_and_diagonalise          25000                         |
 | |/                                                                          |
-| O-> q_is_a_g                                 675174      675174      2.03s  |
+| O-> q_is_a_g                                 675174      675174      2.05s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_koelling_harmon_solve           4811                         |
 |  /o-- ion_atom_ae_hartree                       630                         |
@@ -311,7 +311,7 @@
 |  /o-- ion_atom_ps_solve                        1217                         |
 |  /o-- ion_atom_descreen_psp                    6167                         |
 | |/                                                                          |
-| O-> ion_atom_radin                           153701      153701      1.95s  |
+| O-> ion_atom_radin                           153701      153701      1.96s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_pn_pseudise                        3                         |
 |  /o-- cell_find_reduced_cell                      3                         |
@@ -321,7 +321,7 @@
 |  /o-- cell_set_supercell_symmetry                 1                         |
 |  /o-- cell_check_group                       625086                         |
 | |/                                                                          |
-| O-> algor_invert_real                        625099      625099      1.88s  |
+| O-> algor_invert_real                        625099      625099      1.89s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_initialise                              3                         |
 |  /                                                                          |
@@ -330,18 +330,18 @@
 |   o-> ion_atom_init_pseudo_basis                  3           3      0.02s  |
 |   o-> ion_atom_init_pseudo_atom                   3           3      0.26s  |
 |   o-> ion_atom_init_pseudo_H                      3           3      0.00s  |
-|   o-> ion_atom_ps_diag                          108         108      0.95s  |
+|   o-> ion_atom_ps_diag                          108         108      0.94s  |
 |   o-> ion_atom_set_pseudo_H                     108         108      0.03s  |
 |   o-> ion_atom_regin                           6003        6003      0.02s  |
 |   o-> ion_atom_basis_pseudo_dealloc               3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_enforce_dmat_sumrule             12500                         |
 |  /                                                                          |
-| O-> secondd_find_acoustics                    12500       12500      1.29s  |
+| O-> secondd_find_acoustics                    12500       12500      1.28s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_pseudo_scf                       108                         |
 |  /                                                                          |
-| O-> ion_atom_ps_diag                            108         108      0.95s  |
+| O-> ion_atom_ps_diag                            108         108      0.94s  |
 |    /                                                                        |
 |   o-> ion_atom_regin                         139221      139221      0.43s  |
 |   o-> ion_atom_rectoreal                        354         354      0.00s  |
@@ -351,12 +351,12 @@
 | O-> ion_atom_ae_scf                               3           3      0.78s  |
 |    /                                                                        |
 |   o-> ion_atom_init_ae_H                          3           3      0.00s  |
-|   o-> ion_atom_ae_solve                         204         204      0.74s  |
+|   o-> ion_atom_ae_solve                         204         204      0.73s  |
 |   o-> ion_atom_set_ae_H                         207         207      0.04s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_ae_scf                           204                         |
 |  /                                                                          |
-| O-> ion_atom_ae_solve                           204         204      0.74s  |
+| O-> ion_atom_ae_solve                           204         204      0.73s  |
 |    /                                                                        |
 |   o-> ion_atom_koelling_harmon_solve            204         204      0.73s  |
 +-----------------------------------------------------------------------------+
@@ -368,30 +368,30 @@
 |   o-> ion_atom_number_of_nodes                 4981        4981      0.03s  |
 |   o-> ion_atom_radin                           4811        4811      0.07s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_generate_psp                       3                         |
-|  /                                                                          |
-| O-> ion_atom_define_psp                           3           3      0.70s  |
-|    /                                                                        |
-|   o-> ion_atom_round_to_grid                     69          69      0.00s  |
-|   o-> ion_atom_radin                              9           9      0.00s  |
-|   o-> ion_atom_core_pseudise                      3           3      0.14s  |
-|   o-> ion_atom_radial_transform                   3           3      0.56s  |
-|   o-> ion_atom_derivative                         3           3      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- model_continuation                          2                         |
 |  /                                                                          |
-| O-> basis_initialise                              2           2      0.68s  |
+| O-> basis_initialise                              2           2      0.69s  |
 |    /                                                                        |
 |   o-> cell_copy                                   2           2      0.00s  |
 |   o-> basis_utils_prime_factors                   6           6      0.00s  |
-|   o-> basis_set_serial_grids                      1           1      0.01s  |
+|   o-> basis_set_serial_grids                      1           1      0.00s  |
 |   o-> basis_map_standard_to_fine                  1           1      0.00s  |
 |   o-> basis_map_fine_recip_half_full              1           1      0.00s  |
 |   o-> basis_assign_grid_coordinates               2           2      0.04s  |
-|   o-> basis_count_plane_waves                     1           1      0.62s  |
+|   o-> basis_count_plane_waves                     1           1      0.63s  |
 |   o-> basis_assign_plane_wave_indexes             1           1      0.00s  |
 |   o-> basis_assign_pw_gvectors                    2           2      0.00s  |
 |   o-> basis_calculate_cut_off                     2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_generate_psp                       3                         |
+|  /                                                                          |
+| O-> ion_atom_define_psp                           3           3      0.68s  |
+|    /                                                                        |
+|   o-> ion_atom_round_to_grid                     69          69      0.00s  |
+|   o-> ion_atom_radin                              9           9      0.00s  |
+|   o-> ion_atom_core_pseudise                      3           3      0.12s  |
+|   o-> ion_atom_radial_transform                   3           3      0.56s  |
+|   o-> ion_atom_derivative                         3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          1                         |
 |  /                                                                          |
@@ -403,7 +403,7 @@
 |          o-> wave_prepare_init_wvfn               1           1      0.00s  |
 |          o-> algor_set_random_seed                1           1      0.00s  |
 |          o-> algor_uniform_random_array         530         530      0.01s  |
-|          o-> wave_Sorthonormalise_wv              1           1      0.64s  |
+|          o-> wave_Sorthonormalise_wv              1           1      0.63s  |
 |    /                                                                        |
 |   o-> ion_set_projectors                          1           1      0.00s  |
 +-----------------------------------------------------------------------------+
@@ -413,27 +413,27 @@
 +-----------------------------------------------------------------------------+
 |   o-- wave_initialise_wv                          1                         |
 |  /                                                                          |
-| O-> wave_Sorthonormalise_wv                       1           1      0.64s  |
+| O-> wave_Sorthonormalise_wv                       1           1      0.63s  |
 |    /                                                                        |
-|   o-> wave_Sorthonormalise_wv_ks                  5           5      0.64s  |
+|   o-> wave_Sorthonormalise_wv_ks                  5           5      0.63s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_Sorthonormalise_wv                     5                         |
 |  /                                                                          |
-| O-> wave_Sorthonormalise_wv_ks                    5           5      0.64s  |
+| O-> wave_Sorthonormalise_wv_ks                    5           5      0.63s  |
 |    /                                                                        |
 |   o-> wave_calc_Soverlap_wv_ks                    5           5      0.58s  |
 |   o-> wave_orthonormalise_over_wv_ks              5           5      0.06s  |
 +-----------------------------------------------------------------------------+
 |   o-- basis_initialise                            1                         |
 |  /                                                                          |
-| O-> basis_count_plane_waves                       1           1      0.62s  |
+| O-> basis_count_plane_waves                       1           1      0.63s  |
 |    /                                                                        |
 |   o-> comms_reduce_gv_integer                     3           3      0.00s  |
-|   o-> comms_reduce_kp_integer                     3           3      0.61s  |
+|   o-> comms_reduce_kp_integer                     3           3      0.63s  |
 +-----------------------------------------------------------------------------+
 |   o-- basis_count_plane_waves                     3                         |
 |  /                                                                          |
-| O-> comms_reduce_kp_integer                       3           3      0.61s  |
+| O-> comms_reduce_kp_integer                       3           3      0.63s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_Sorthonormalise_wv_ks                  5                         |
 |  /                                                                          |
@@ -485,7 +485,7 @@
 +-----------------------------------------------------------------------------+
 |   o-- secondd_group_symmetrize_dmat           37501                         |
 |  /                                                                          |
-| O-> cell_factor_group_symmetry_wrapped        37501       37501      0.47s  |
+| O-> cell_factor_group_symmetry_wrapped        37501       37501      0.48s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_enforce_dmat_sumrule             25000                         |
 |  /o-- phonon_prepare_and_diagonalise          12500                         |
@@ -494,7 +494,7 @@
 +-----------------------------------------------------------------------------+
 |   o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /                                                                          |
-| O-> hermitian4                                37501       37501      0.38s  |
+| O-> hermitian4                                37501       37501      0.39s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_all_beta_multi_phi_recip                5                         |
 |  /                                                                          |
@@ -516,7 +516,7 @@
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_generate_psp                       3                         |
 |  /                                                                          |
-| O-> ion_atom_descreen_psp                         3           3      0.25s  |
+| O-> ion_atom_descreen_psp                         3           3      0.26s  |
 |    /                                                                        |
 |   o-> ion_atom_init_ae_atom                       3           3      0.00s  |
 |   o-> ion_atom_set_ae_occ                         3           3      0.00s  |
@@ -527,22 +527,17 @@
 |   o-> ion_atom_derivative                         3           3      0.00s  |
 |   o-> ion_atom_ae_dealloc                         3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
-|  /                                                                          |
-| O-> model_write                                   1           1      0.20s  |
-|    /                                                                        |
-|   o-> model_write_all                             1           1      0.08s  |
-|   o-> comms_barrier_farm                          1           1      0.00s  |
-|   o-> comms_barrier                               1           1      0.12s  |
-+-----------------------------------------------------------------------------+
 |   o-- ion_all_beta_multi_phi_recip                5                         |
 |  /                                                                          |
 | O-> algor_matmul_cmplx_cmplx                      5           5      0.18s  |
 +-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                        25000                         |
-|  /o-- model_write_occ_eigenvalues                 3                         |
-| |/                                                                          |
-| O-> comms_send_real                           25003       25003      0.18s  |
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> model_write                                   1           1      0.17s  |
+|    /                                                                        |
+|   o-> model_write_all                             1           1      0.04s  |
+|   o-> comms_barrier_farm                          1           1      0.00s  |
+|   o-> comms_barrier                               1           1      0.12s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_allocate                               6                         |
 |  /o-- model_reset                                 8                         |
@@ -551,21 +546,16 @@
 |  /o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /o-- phonon_calculate                            2                         |
 | |/                                                                          |
-| O-> cell_deallocate                           37520       37520      0.15s  |
+| O-> cell_deallocate                           37520       37520      0.16s  |
++-----------------------------------------------------------------------------+
+|   o-- phonon_calculate                        25000                         |
+|  /o-- model_write_occ_eigenvalues                 3                         |
+| |/                                                                          |
+| O-> comms_send_real                           25003       25003      0.15s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_beta_recip_set                       1320                         |
 |  /                                                                          |
 | O-> ion_beta_recip_interpolation               1320        1320      0.14s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_define_psp                         3                         |
-|  /                                                                          |
-| O-> ion_atom_core_pseudise                        3           3      0.14s  |
-|    /                                                                        |
-|   o-> ion_atom_set_qn                             3           3      0.00s  |
-|   o-> ion_atom_poly_deriv                         3           3      0.01s  |
-|   o-> ion_atom_radin                           2406        2406      0.03s  |
-|   o-> ion_atom_regin                            168         168      0.00s  |
-|   o-> ion_atom_solve_linear                       3           3      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_symmetrize_dmat_cmplx           37501                         |
 |  /                                                                          |
@@ -573,7 +563,7 @@
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          2                         |
 |  /                                                                          |
-| O-> cell_restore_wrapped                          2           2      0.12s  |
+| O-> cell_restore_wrapped                          2           2      0.13s  |
 |    /                                                                        |
 |   o-> comms_gcopy_character                       2           2      0.00s  |
 |   o-> cell_restore_cell                           2           2      0.00s  |
@@ -583,6 +573,16 @@
 |   o-- model_write                                 1                         |
 |  /                                                                          |
 | O-> comms_barrier                                 1           1      0.12s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_define_psp                         3                         |
+|  /                                                                          |
+| O-> ion_atom_core_pseudise                        3           3      0.12s  |
+|    /                                                                        |
+|   o-> ion_atom_set_qn                             3           3      0.00s  |
+|   o-> ion_atom_poly_deriv                         3           3      0.00s  |
+|   o-> ion_atom_radin                           2406        2406      0.03s  |
+|   o-> ion_atom_regin                            168         168      0.00s  |
+|   o-> ion_atom_solve_linear                       3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_restore_wrapped                        2                         |
 |  /                                                                          |
@@ -599,15 +599,6 @@
 |   o-- ion_initialise                              3                         |
 |  /                                                                          |
 | O-> ion_set_data                                  3           3      0.10s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_write                                 1                         |
-|  /                                                                          |
-| O-> model_write_all                               1           1      0.08s  |
-|    /                                                                        |
-|   o-> parameters_dump                             1           1      0.00s  |
-|   o-> cell_dump                                   2           2      0.00s  |
-|   o-> model_write_occ_eigenvalues                 1           1      0.06s  |
-|   o-> density_write                               1           1      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_construct_psp                     21                         |
 |  /                                                                          |
@@ -632,14 +623,6 @@
 |   o-> ion_atom_regin                           1296        1296      0.00s  |
 |   o-> ion_atom_solve_linear                      18          18      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_write_all                             1                         |
-|  /                                                                          |
-| O-> model_write_occ_eigenvalues                   1           1      0.06s  |
-|    /                                                                        |
-|   o-> comms_reduce_bnd_real                       2           2      0.00s  |
-|   o-> comms_gather_kp_integer                     1           1      0.00s  |
-|   o-> comms_send_real                             3           3      0.06s  |
-+-----------------------------------------------------------------------------+
 |   o-- wave_Sorthonormalise_wv_ks                  5                         |
 |  /                                                                          |
 | O-> wave_orthonormalise_over_wv_ks                5           5      0.06s  |
@@ -647,6 +630,10 @@
 |   o-> comms_reduce_bnd_complex                    5           5      0.00s  |
 |   o-> algor_invert_complex                        5           5      0.00s  |
 |   o-> comms_copy_gv_complex                       5           5      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_initialise                              3                         |
+|  /                                                                          |
+| O-> ion_set_psp                                   3           3      0.05s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_calc_Soverlap_wv_ks                    5                         |
 |  /                                                                          |
@@ -658,21 +645,30 @@
 |  /                                                                          |
 | O-> local_dot_all_self                            5           5      0.05s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_initialise                              3                         |
+|   o-- model_write                                 1                         |
 |  /                                                                          |
-| O-> ion_set_psp                                   3           3      0.05s  |
+| O-> model_write_all                               1           1      0.04s  |
+|    /                                                                        |
+|   o-> parameters_dump                             1           1      0.00s  |
+|   o-> cell_dump                                   2           2      0.00s  |
+|   o-> model_write_occ_eigenvalues                 1           1      0.03s  |
+|   o-> density_write                               1           1      0.02s  |
++-----------------------------------------------------------------------------+
+|   o-- model_continuation                          1                         |
+|  /                                                                          |
+| O-> density_read                                  1           1      0.04s  |
+|    /                                                                        |
+|   o-> density_real_to_complex                     1           1      0.01s  |
+|   o-> density_read_serial                         1           1      0.03s  |
+|   o-> density_complex_to_real                     1           1      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_real_to_fine                     12501                         |
 |  /                                                                          |
-| O-> check_image_list                          12501       12501      0.05s  |
+| O-> check_image_list                          12501       12501      0.04s  |
 |    /                                                                        |
 |   o-> cell_frac_to_cart_vector_wrapped           88          88      0.00s  |
 |   o-> cell_find_reduced_cell                      1           1      0.00s  |
 |   o-> cell_detect_same_cell                       1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- phonon_prepare_and_diagonalise          12500                         |
-|  /                                                                          |
-| O-> phonon_constrain_dmat                     12500       12500      0.04s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_descreen_psp                       3                         |
 |  /                                                                          |
@@ -681,13 +677,9 @@
 |   o-> ion_atom_sod_solve                        557         557      0.02s  |
 |   o-> ion_atom_radin                           1217        1217      0.01s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
+|   o-- phonon_prepare_and_diagonalise          12500                         |
 |  /                                                                          |
-| O-> density_read                                  1           1      0.04s  |
-|    /                                                                        |
-|   o-> density_real_to_complex                     1           1      0.01s  |
-|   o-> density_read_serial                         1           1      0.03s  |
-|   o-> density_complex_to_real                     1           1      0.00s  |
+| O-> phonon_constrain_dmat                     12500       12500      0.04s  |
 +-----------------------------------------------------------------------------+
 |   o-- basis_initialise                            2                         |
 |  /                                                                          |
@@ -727,6 +719,14 @@
 |   o-> ion_atom_pseudo_xc                        108         108      0.00s  |
 |   o-> ion_atom_regin                           4113        4113      0.01s  |
 +-----------------------------------------------------------------------------+
+|   o-- model_write_all                             1                         |
+|  /                                                                          |
+| O-> model_write_occ_eigenvalues                   1           1      0.03s  |
+|    /                                                                        |
+|   o-> comms_reduce_bnd_real                       2           2      0.00s  |
+|   o-> comms_gather_kp_integer                     1           1      0.00s  |
+|   o-> comms_send_real                             3           3      0.03s  |
++-----------------------------------------------------------------------------+
 |   o-- ion_atom_koelling_harmon_solve           4981                         |
 |  /                                                                          |
 | O-> ion_atom_number_of_nodes                   4981        4981      0.03s  |
@@ -741,19 +741,6 @@
 |  /                                                                          |
 | O-> comms_copy_kp_complex                         1           1      0.03s  |
 +-----------------------------------------------------------------------------+
-|   o-- basis_calculate_cut_off                     2                         |
-|  /o-- phonon_calculate                            1                         |
-| |/                                                                          |
-| O-> comms_reduce_kp_real                          3           3      0.02s  |
-|    /                                                                        |
-|   o-> comms_reduce_array_real                     1           1      0.02s  |
-+-----------------------------------------------------------------------------+
-|   o-- comms_reduce_gv_real                        1                         |
-|  /o-- comms_reduce_bnd_real                       3                         |
-|  /o-- comms_reduce_kp_real                        1                         |
-| |/                                                                          |
-| O-> comms_reduce_array_real                       5           5      0.02s  |
-+-----------------------------------------------------------------------------+
 |   o-- ion_atom_qc_pseudise_fn                  7218                         |
 |  /                                                                          |
 | O-> ion_atom_expjl                             7218        7218      0.02s  |
@@ -764,6 +751,14 @@
 | O-> density_real_to_complex                       2           2      0.02s  |
 |    /                                                                        |
 |   o-> density_allocate                            2           2      0.01s  |
++-----------------------------------------------------------------------------+
+|   o-- model_continuation                          1                         |
+|  /o-- density_real_to_complex                     2                         |
+|  /o-- density_complex_to_real                     1                         |
+|  /o-- nlxc_initialise                             1                         |
+|  /o-- density_write                               1                         |
+| |/                                                                          |
+| O-> density_allocate                              6           6      0.02s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_ps_solve                         557                         |
 |  /                                                                          |
@@ -781,19 +776,12 @@
 |  /                                                                          |
 | O-> basis_multiply_recip_reduced               1320        1320      0.02s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_core_pseudise                      3                         |
-|  /o-- ion_atom_qc_pseudise_fn                    18                         |
-|  /o-- ion_atom_Q_pseudise                        95                         |
+|   o-- basis_calculate_cut_off                     2                         |
+|  /o-- phonon_calculate                            1                         |
 | |/                                                                          |
-| O-> ion_atom_solve_linear                       116         116      0.02s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
-|  /o-- density_real_to_complex                     2                         |
-|  /o-- density_complex_to_real                     1                         |
-|  /o-- nlxc_initialise                             1                         |
-|  /o-- density_write                               1                         |
-| |/                                                                          |
-| O-> density_allocate                              6           6      0.02s  |
+| O-> comms_reduce_kp_real                          3           3      0.02s  |
+|    /                                                                        |
+|   o-> comms_reduce_array_real                     1           1      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_pseudo_scf                         3                         |
 |  /                                                                          |
@@ -801,6 +789,16 @@
 |    /                                                                        |
 |   o-> ion_atom_find_root                       1206        1206      0.01s  |
 |   o-> ion_atom_regin                            366         366      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- model_write_all                             1                         |
+|  /                                                                          |
+| O-> density_write                                 1           1      0.02s  |
+|    /                                                                        |
+|   o-> density_allocate                            1           1      0.00s  |
+|   o-> density_copy                                1           1      0.00s  |
+|   o-> density_real_to_complex                     1           1      0.01s  |
+|   o-> density_write_serial                        1           1      0.00s  |
+|   o-> density_deallocate                          1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          1                         |
 |  /                                                                          |
@@ -821,15 +819,11 @@
 |   o-> model_compare_matrices                   2304        2304      0.01s  |
 |   o-> model_compare_vectors                      48          48      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_write_all                             1                         |
-|  /                                                                          |
-| O-> density_write                                 1           1      0.01s  |
-|    /                                                                        |
-|   o-> density_allocate                            1           1      0.00s  |
-|   o-> density_copy                                1           1      0.00s  |
-|   o-> density_real_to_complex                     1           1      0.01s  |
-|   o-> density_write_serial                        1           1      0.00s  |
-|   o-> density_deallocate                          1           1      0.00s  |
+|   o-- comms_reduce_gv_real                        1                         |
+|  /o-- comms_reduce_bnd_real                       3                         |
+|  /o-- comms_reduce_kp_real                        1                         |
+| |/                                                                          |
+| O-> comms_reduce_array_real                       5           5      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_core_pseudise                      3                         |
 |  /o-- ion_atom_qc_pseudise_fn                    18                         |
@@ -844,9 +838,22 @@
 |    /                                                                        |
 |   o-> ion_atom_radin                            630         630      0.01s  |
 +-----------------------------------------------------------------------------+
-|   o-- basis_initialise                            1                         |
+|   o-- model_continuation                          1                         |
 |  /                                                                          |
-| O-> basis_set_serial_grids                        1           1      0.01s  |
+| O-> model_read_occ_eigenvalues                    1           1      0.01s  |
+|    /                                                                        |
+|   o-> comms_copy_kp_real                         30          30      0.01s  |
+|   o-> comms_copy_bnd_logical                     50          50      0.00s  |
+|   o-> comms_copy_bnd_real                        10          10      0.00s  |
+|   o-> comms_copy_gv_real                          2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- model_read_occ_eigenvalues                 30                         |
+|  /                                                                          |
+| O-> comms_copy_kp_real                           30          30      0.01s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_beta_recip_set                        110                         |
+|  /                                                                          |
+| O-> ion_cc_structure_factor                     110         110      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_read_wrapped                          11                         |
 |  /o-- cell_generate_qpoints_local                 2                         |
@@ -861,10 +868,6 @@
 |  /o-- secondd_detect_kpoints_changed              1                         |
 | |/                                                                          |
 | O-> comms_gcopy_logical                         191         191      0.01s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_beta_recip_set                        110                         |
-|  /                                                                          |
-| O-> ion_cc_structure_factor                     110         110      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
@@ -883,26 +886,9 @@
 |   o-> comms_save_strategy                         1           1      0.00s  |
 |   o-> comms_gcopy_character                       1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- wave_calc_Soverlap_wv_ks                    5                         |
+|   o-- model_symmetry_unchanged                 2304                         |
 |  /                                                                          |
-| O-> wave_q_dot_all_self_c                         5           5      0.01s  |
-|    /                                                                        |
-|   o-> local_q_dot_all_self_c                      5           5      0.01s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
-|  /                                                                          |
-| O-> parameters_reread                             1           1      0.01s  |
-|    /                                                                        |
-|   o-> comms_gcopy_integer                         2           2      0.01s  |
-|   o-> comms_gcopy_logical                         1           1      0.00s  |
-|   o-> parameters_bcast                            1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_core_pseudise                      3                         |
-|  /o-- ion_atom_pn_pseudise                        6                         |
-|  /o-- ion_atom_qc_pseudise_fn                    18                         |
-|  /o-- ion_atom_Q_pseudise                        95                         |
-| |/                                                                          |
-| O-> ion_atom_poly_deriv                         122         122      0.01s  |
+| O-> model_compare_matrices                     2304        2304      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                            1                         |
 |  /                                                                          |
@@ -921,40 +907,40 @@
 |   o-> cell_generate_cell_constraints              1           1      0.00s  |
 |   o-> cell_generate_ionic_constraints             1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_symmetry_unchanged                 2304                         |
+|   o-- wave_calc_Soverlap_wv_ks                    5                         |
 |  /                                                                          |
-| O-> model_compare_matrices                     2304        2304      0.01s  |
+| O-> wave_q_dot_all_self_c                         5           5      0.01s  |
+|    /                                                                        |
+|   o-> local_q_dot_all_self_c                      5           5      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_q_dot_all_self_c                       5                         |
 |  /                                                                          |
 | O-> local_q_dot_all_self_c                        5           5      0.01s  |
++-----------------------------------------------------------------------------+
+|   o-- model_continuation                          1                         |
+|  /                                                                          |
+| O-> parameters_reread                             1           1      0.01s  |
+|    /                                                                        |
+|   o-> comms_gcopy_integer                         2           2      0.01s  |
+|   o-> comms_gcopy_logical                         1           1      0.00s  |
+|   o-> parameters_bcast                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_initialise_wv                        530                         |
 |  /o-- cell_generate_cell_constraints              1                         |
 | |/                                                                          |
 | O-> algor_uniform_random_array                  531         531      0.01s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
+|   o-- density_read                                1                         |
 |  /                                                                          |
-| O-> model_read_occ_eigenvalues                    1           1      0.01s  |
-|    /                                                                        |
-|   o-> comms_copy_kp_real                         30          30      0.01s  |
-|   o-> comms_copy_bnd_logical                     50          50      0.00s  |
-|   o-> comms_copy_bnd_real                        10          10      0.00s  |
-|   o-> comms_copy_gv_real                          2           2      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_read_occ_eigenvalues                 30                         |
-|  /                                                                          |
-| O-> comms_copy_kp_real                           30          30      0.01s  |
-+-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
-|  /                                                                          |
-| O-> nlxc_initialise                               1           1      0.01s  |
+| O-> density_complex_to_real                       1           1      0.01s  |
 |    /                                                                        |
 |   o-> density_allocate                            1           1      0.00s  |
-|   o-> density_copy                                1           1      0.00s  |
-|   o-> cell_generate_qpoints_local                 1           1      0.00s  |
-|   o-> density_deallocate                          1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_core_pseudise                      3                         |
+|  /o-- ion_atom_qc_pseudise_fn                    18                         |
+|  /o-- ion_atom_Q_pseudise                        95                         |
+| |/                                                                          |
+| O-> ion_atom_solve_linear                       116         116      0.01s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_init_pseudo_basis               1206                         |
 |  /                                                                          |
@@ -972,15 +958,14 @@
 |   o-> parameters_reallocate_xc                   21          21      0.00s  |
 |   o-> comms_gcopy_real                          212         212      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- density_read                                1                         |
-|  /                                                                          |
-| O-> density_complex_to_real                       1           1      0.00s  |
-|    /                                                                        |
-|   o-> density_allocate                            1           1      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- basis_initialise                            2                         |
 |  /                                                                          |
 | O-> basis_assign_pw_gvectors                      2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- comms_reduce_gv_complex                    10                         |
+|  /o-- comms_reduce_bnd_complex                    5                         |
+| |/                                                                          |
+| O-> comms_reduce_array_complex                   15          15      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_all_beta_multi_phi_recip                5                         |
 |  /o-- wave_calc_Soverlap_wv_ks                    5                         |
@@ -989,26 +974,23 @@
 |    /                                                                        |
 |   o-> comms_reduce_array_complex                 10          10      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- comms_reduce_gv_complex                    10                         |
-|  /o-- comms_reduce_bnd_complex                    5                         |
+|   o-- nlxc_initialise                             1                         |
+|  /o-- density_write                               1                         |
 | |/                                                                          |
-| O-> comms_reduce_array_complex                   15          15      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
-|  /o-- model_deallocate                            1                         |
-| |/                                                                          |
-| O-> model_reset                                   2           2      0.00s  |
-|    /                                                                        |
-|   o-> cell_deallocate                             8           8      0.00s  |
-|   o-> wave_deallocate_wv                          2           2      0.00s  |
-|   o-> density_deallocate                          2           2      0.00s  |
-|   o-> dielectric_permittivity_deallocate          2           2      0.00s  |
+| O-> density_copy                                  2           2      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
-| O-> ion_read                                      1           1      0.00s  |
+| O-> nlxc_initialise                               1           1      0.00s  |
 |    /                                                                        |
-|   o-> ion_atom_inquire_psp                        3           3      0.00s  |
+|   o-> density_allocate                            1           1      0.00s  |
+|   o-> density_copy                                1           1      0.00s  |
+|   o-> cell_generate_qpoints_local                 1           1      0.00s  |
+|   o-> density_deallocate                          1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- basis_initialise                            1                         |
+|  /                                                                          |
+| O-> basis_assign_plane_wave_indexes               1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_restore_wrapped                        2                         |
 |  /                                                                          |
@@ -1026,20 +1008,6 @@
 |    /                                                                        |
 |   o-> algor_uniform_random                      504         504      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- basis_initialise                            1                         |
-|  /                                                                          |
-| O-> basis_assign_plane_wave_indexes               1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- wave_orthonormalise_over_wv_ks              5                         |
-|  /                                                                          |
-| O-> algor_invert_complex                          5           5      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_construct_psp                    168                         |
-|  /                                                                          |
-| O-> ion_atom_real_derivative_kind1              168         168      0.00s  |
-|    /                                                                        |
-|   o-> ion_atom_real_derivative                  168         168      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
 | O-> bib_output                                    1           1      0.00s  |
@@ -1048,6 +1016,12 @@
 |   o-> comms_reduce_bnd_logical                    1           1      0.00s  |
 |   o-> comms_reduce_gv_logical                     1           1      0.00s  |
 |   o-> comms_reduce_kp_logical                     1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_construct_psp                    168                         |
+|  /                                                                          |
+| O-> ion_atom_real_derivative_kind1              168         168      0.00s  |
+|    /                                                                        |
+|   o-> ion_atom_real_derivative                  168         168      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_prepare_init_wvfn                      1                         |
 |  /o-- phonon_calculate                            1                         |
@@ -1068,10 +1042,13 @@
 |    /                                                                        |
 |   o-> ion_atom_kh_partial_wave                   21          21      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- nlxc_initialise                             1                         |
-|  /o-- density_write                               1                         |
-| |/                                                                          |
-| O-> density_copy                                  2           2      0.00s  |
+|   o-- model_continuation                          1                         |
+|  /                                                                          |
+| O-> comms_parallel_strategy                       1           1      0.00s  |
+|    /                                                                        |
+|   o-> find_strategy                               1           1      0.00s  |
+|   o-> assign_nodes                                1           1      0.00s  |
+|   o-> reassign_nodes                              1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_partial_wave                      21                         |
 |  /                                                                          |
@@ -1122,25 +1099,15 @@
 | |/                                                                          |
 | O-> ion_atom_init_ae_atom                         6           6      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_read                                    3                         |
+|   o-- basis_initialise                            1                         |
 |  /                                                                          |
-| O-> ion_atom_inquire_psp                          3           3      0.00s  |
-|    /                                                                        |
-|   o-> ion_atom_init_ae_basis                      3           3      0.00s  |
+| O-> basis_map_fine_recip_half_full                1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          5                         |
 |  /o-- basis_initialise                            2                         |
 |  /o-- phonon_calculate                            2                         |
 | |/                                                                          |
 | O-> cell_copy                                     9           9      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- basis_initialise                            1                         |
-|  /                                                                          |
-| O-> basis_map_fine_recip_half_full                1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                            1                         |
-|  /                                                                          |
-| O-> secondd_symmetry_init                         1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_read_wrapped                          29                         |
 |  /o-- parameters_bcast                          214                         |
@@ -1175,14 +1142,19 @@
 |    /                                                                        |
 |   o-> ion_atom_regin                            111         111      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                            1                         |
+|   o-- basis_initialise                            2                         |
 |  /                                                                          |
-| O-> secondd_finalise                              1           1      0.00s  |
+| O-> basis_calculate_cut_off                       2           2      0.00s  |
 |    /                                                                        |
-|   o-> raman_finalise                              1           1      0.00s  |
-|   o-> secondd_deallocate_wvfns                    1           1      0.00s  |
-|   o-> secondd_detect_symmetry_changed             1           1      0.00s  |
-|   o-> secondd_detect_kpoints_changed              1           1      0.00s  |
+|   o-> comms_reduce_gv_real                        2           2      0.00s  |
+|   o-> comms_reduce_kp_real                        2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_core_pseudise                      3                         |
+|  /o-- ion_atom_pn_pseudise                        6                         |
+|  /o-- ion_atom_qc_pseudise_fn                    18                         |
+|  /o-- ion_atom_Q_pseudise                        95                         |
+| |/                                                                          |
+| O-> ion_atom_poly_deriv                         122         122      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_generate_ionic_constraints           504                         |
 |  /                                                                          |
@@ -1194,9 +1166,12 @@
 |    /                                                                        |
 |   o-> cell_reduce_kpoints_internal                1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- <parent(s) not traced>                      1                         |
+|   o-- wave_initialise_wv                          1                         |
 |  /                                                                          |
-| O-> ion_finalise                                  1           1      0.00s  |
+| O-> wave_prepare_init_wvfn                        1           1      0.00s  |
+|    /                                                                        |
+|   o-> comms_reduce_gv_integer                    10          10      0.00s  |
+|   o-> comms_reduce_kp_logical                     1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_unfold_kpoints_arg_trace               1                         |
 |  /                                                                          |
@@ -1205,11 +1180,20 @@
 |   o-> cell_kpoint_tolerance                       1           1      0.00s  |
 |   o-> cell_sort_kpoints_with_recip                2           2      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- secondd_finalise                            1                         |
+|   o-- <parent(s) not traced>                      1                         |
 |  /                                                                          |
-| O-> secondd_detect_symmetry_changed               1           1      0.00s  |
+| O-> ion_finalise                                  1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- wave_orthonormalise_over_wv_ks              5                         |
+|  /                                                                          |
+| O-> algor_invert_complex                          5           5      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_init_pseudo_H                      3                         |
+|  /o-- ion_atom_set_pseudo_H                     108                         |
+| |/                                                                          |
+| O-> ion_atom_pseudo_hartree                     111         111      0.00s  |
 |    /                                                                        |
-|   o-> comms_gcopy_logical                         1           1      0.00s  |
+|   o-> ion_atom_regin                            111         111      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_reduce_kpoints_internal                2                         |
 |  /                                                                          |
@@ -1219,30 +1203,28 @@
 |   o-> algor_invert_real                           4           4      0.00s  |
 |   o-> algor_sort                                  2           2      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_init_pseudo_H                      3                         |
-|  /o-- ion_atom_set_pseudo_H                     108                         |
-| |/                                                                          |
-| O-> ion_atom_pseudo_hartree                     111         111      0.00s  |
-|    /                                                                        |
-|   o-> ion_atom_regin                            111         111      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
+|   o-- phonon_calculate                            1                         |
 |  /                                                                          |
-| O-> check_forces_stresses                         1           1      0.00s  |
+| O-> secondd_finalise                              1           1      0.00s  |
 |    /                                                                        |
-|   o-> firstd_output_forces                        1           1      0.00s  |
+|   o-> raman_finalise                              1           1      0.00s  |
+|   o-> secondd_deallocate_wvfns                    1           1      0.00s  |
+|   o-> secondd_detect_symmetry_changed             1           1      0.00s  |
+|   o-> secondd_detect_kpoints_changed              1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- <parent(s) not traced>                      1                         |
 |  /                                                                          |
 | O-> basis_deallocate                              1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
+|   o-- basis_initialise                            1                         |
 |  /                                                                          |
-| O-> comms_parallel_strategy                       1           1      0.00s  |
+| O-> basis_set_serial_grids                        1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- secondd_finalise                            1                         |
+|  /                                                                          |
+| O-> secondd_detect_symmetry_changed               1           1      0.00s  |
 |    /                                                                        |
-|   o-> find_strategy                               1           1      0.00s  |
-|   o-> assign_nodes                                1           1      0.00s  |
-|   o-> reassign_nodes                              1           1      0.00s  |
+|   o-> comms_gcopy_logical                         1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_pseudo_scf                         3                         |
 |  /                                                                          |
@@ -1252,12 +1234,10 @@
 |   o-> ion_atom_pseudo_hartree                     3           3      0.00s  |
 |   o-> ion_atom_pseudo_xc                          3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- basis_initialise                            2                         |
-|  /                                                                          |
-| O-> basis_calculate_cut_off                       2           2      0.00s  |
-|    /                                                                        |
-|   o-> comms_reduce_gv_real                        2           2      0.00s  |
-|   o-> comms_reduce_kp_real                        2           2      0.00s  |
+|   o-- cell_generate_qpoints_local                 2                         |
+|  /o-- cell_restore_global_wrapped                 4                         |
+| |/                                                                          |
+| O-> cell_detect_MP                                6           6      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_restore_wrapped                        2                         |
 |  /                                                                          |
@@ -1270,14 +1250,19 @@
 |   o-> comms_gcopy_logical                         6           6      0.00s  |
 |   o-> comms_gcopy_character                      12          12      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- cell_generate_qpoints_local                 2                         |
-|  /o-- cell_restore_global_wrapped                 4                         |
-| |/                                                                          |
-| O-> cell_detect_MP                                6           6      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- basis_initialise                            1                         |
 |  /                                                                          |
 | O-> basis_map_standard_to_fine                    1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- model_continuation                          1                         |
+|  /o-- model_deallocate                            1                         |
+| |/                                                                          |
+| O-> model_reset                                   2           2      0.00s  |
+|    /                                                                        |
+|   o-> cell_deallocate                             8           8      0.00s  |
+|   o-> wave_deallocate_wv                          2           2      0.00s  |
+|   o-> density_deallocate                          2           2      0.00s  |
+|   o-> dielectric_permittivity_deallocate          2           2      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
@@ -1295,25 +1280,27 @@
 |    /                                                                        |
 |   o-> ion_atom_interpolate                       44          44      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- ion_atom_inquire_psp                        3                         |
+|  /o-- ion_atom_generate_psp                       3                         |
+| |/                                                                          |
+| O-> ion_atom_init_ae_basis                        6           6      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- model_reset                                 2                         |
 |  /o-- secondd_deallocate_wvfns                    4                         |
 | |/                                                                          |
 | O-> wave_deallocate_wv                            6           6      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_inquire_psp                        3                         |
-|  /o-- ion_atom_generate_psp                       3                         |
-| |/                                                                          |
-| O-> ion_atom_init_ae_basis                        6           6      0.00s  |
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> ion_read                                      1           1      0.00s  |
+|    /                                                                        |
+|   o-> ion_atom_inquire_psp                        3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_initialise                              1                         |
 |  /                                                                          |
 | O-> ion_clebsch_gordan                            1           1      0.00s  |
 |    /                                                                        |
 |   o-> init_factorial                              1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- cell_supercell                              1                         |
-|  /                                                                          |
-| O-> cell_copy_kpoints                             1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_pseudise                           3                         |
 |  /                                                                          |
@@ -1322,12 +1309,15 @@
 |   o-> ion_atom_poly_deriv                         6           6      0.00s  |
 |   o-> algor_invert_real                           3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- wave_initialise_wv                          1                         |
+|   o-- ion_read                                    3                         |
 |  /                                                                          |
-| O-> wave_prepare_init_wvfn                        1           1      0.00s  |
+| O-> ion_atom_inquire_psp                          3           3      0.00s  |
 |    /                                                                        |
-|   o-> comms_reduce_gv_integer                    10          10      0.00s  |
-|   o-> comms_reduce_kp_logical                     1           1      0.00s  |
+|   o-> ion_atom_init_ae_basis                      3           3      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- cell_supercell                              1                         |
+|  /                                                                          |
+| O-> cell_copy_kpoints                             1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_init_ae_H                          3                         |
 |  /o-- ion_atom_descreen_psp                       3                         |
@@ -1351,21 +1341,25 @@
 |  /                                                                          |
 | O-> ion_atom_round_to_grid                       69          69      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- check_image_list                           88                         |
+|  /                                                                          |
+| O-> cell_frac_to_cart_vector_wrapped             88          88      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- ion_atom_ae_scf                             3                         |
 |  /                                                                          |
 | O-> ion_atom_init_ae_H                            3           3      0.00s  |
 |    /                                                                        |
 |   o-> ion_atom_set_ae_occ                         3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- check_image_list                           88                         |
-|  /                                                                          |
-| O-> cell_frac_to_cart_vector_wrapped             88          88      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- model_reset                                 2                         |
 |  /o-- nlxc_initialise                             1                         |
 |  /o-- density_write                               1                         |
 | |/                                                                          |
 | O-> density_deallocate                            4           4      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_initialise                              7                         |
+|  /                                                                          |
+| O-> ion_atom_deallocate_pspot                     7           7      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- bib_add                                     1                         |
 |  /                                                                          |
@@ -1376,10 +1370,6 @@
 | O-> parameters_reallocate_xc                     21          21      0.00s  |
 |    /                                                                        |
 |   o-> comms_gcopy_integer                        21          21      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_initialise                              7                         |
-|  /                                                                          |
-| O-> ion_atom_deallocate_pspot                     7           7      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- wave_initialise_wv                          1                         |
 |  /o-- wave_beta_phi_wv_ks                         5                         |
@@ -1418,12 +1408,6 @@
 |    /                                                                        |
 |   o-> comms_reduce_array_complex                  5           5      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- secondd_finalise                            1                         |
-|  /                                                                          |
-| O-> secondd_deallocate_wvfns                      1           1      0.00s  |
-|    /                                                                        |
-|   o-> wave_deallocate_wv                          4           4      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- parameters_read                             1                         |
 |  /o-- wave_initialise_wv                          1                         |
 | |/                                                                          |
@@ -1439,33 +1423,12 @@
 | |/                                                                          |
 | O-> comms_reduce_gv_integer                      14          14      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- basis_calculate_cut_off                     2                         |
-|  /o-- phonon_calculate                            1                         |
-| |/                                                                          |
-| O-> comms_reduce_gv_real                          3           3      0.00s  |
-|    /                                                                        |
-|   o-> comms_reduce_array_real                     1           1      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- ion_set_projectors                         11                         |
 |  /o-- bib_output                                  1                         |
 | |/                                                                          |
 | O-> comms_reduce_gv_logical                      12          12      0.00s  |
 |    /                                                                        |
 |   o-> comms_lcopy                                 1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
-|  /                                                                          |
-| O-> model_store_dependencies                      1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
-|  /                                                                          |
-| O-> openbc_locps_initialise                       1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_continuation                          1                         |
-|  /                                                                          |
-| O-> wave_allocate_wv                              1           1      0.00s  |
-|    /                                                                        |
-|   o-> wave_band_basis_initialise                  1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_write_all                             2                         |
 |  /                                                                          |
@@ -1474,30 +1437,31 @@
 |   o-> cell_dump_cell                              2           2      0.00s  |
 |   o-> cell_dump_global                            2           2      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- wave_beta_phi_wv_ks                         5                         |
-|  /                                                                          |
-| O-> wave_calc_ps_q_nonzero                        5           5      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- secondd_finalise                            1                         |
-|  /                                                                          |
-| O-> raman_finalise                                1           1      0.00s  |
-|    /                                                                        |
-|   o-> raman_empty_cache                           1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_define_psp                         3                         |
-|  /o-- ion_atom_descreen_psp                       3                         |
+|   o-- basis_calculate_cut_off                     2                         |
+|  /o-- phonon_calculate                            1                         |
 | |/                                                                          |
-| O-> ion_atom_derivative                           6           6      0.00s  |
+| O-> comms_reduce_gv_real                          3           3      0.00s  |
+|    /                                                                        |
+|   o-> comms_reduce_array_real                     1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- model_continuation                          1                         |
+|  /                                                                          |
+| O-> wave_allocate_wv                              1           1      0.00s  |
+|    /                                                                        |
+|   o-> wave_band_basis_initialise                  1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
 | O-> multigrid_dlmg_initialise                     1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- cell_supercell                              1                         |
+|   o-- wave_beta_phi_wv_ks                         5                         |
 |  /                                                                          |
-| O-> cell_generate_cell_constraints                1           1      0.00s  |
-|    /                                                                        |
-|   o-> algor_uniform_random_array                  1           1      0.00s  |
+| O-> wave_calc_ps_q_nonzero                        5           5      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_define_psp                         3                         |
+|  /o-- ion_atom_descreen_psp                       3                         |
+| |/                                                                          |
+| O-> ion_atom_derivative                           6           6      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_sort_kpoints_with_recip                2                         |
 |  /o-- check_image_list                            1                         |
@@ -1506,6 +1470,18 @@
 |    /                                                                        |
 |   o-> algor_invert_real                           3           3      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- secondd_finalise                            1                         |
+|  /                                                                          |
+| O-> secondd_deallocate_wvfns                      1           1      0.00s  |
+|    /                                                                        |
+|   o-> wave_deallocate_wv                          4           4      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- cell_supercell                              1                         |
+|  /                                                                          |
+| O-> cell_generate_cell_constraints                1           1      0.00s  |
+|    /                                                                        |
+|   o-> algor_uniform_random_array                  1           1      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                            1                         |
 |  /o-- model_write_occ_eigenvalues                 2                         |
 | |/                                                                          |
@@ -1513,9 +1489,9 @@
 |    /                                                                        |
 |   o-> comms_reduce_array_real                     3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_write_occ_eigenvalues                 1                         |
+|   o-- model_continuation                          1                         |
 |  /                                                                          |
-| O-> comms_gather_kp_integer                       1           1      0.00s  |
+| O-> model_store_dependencies                      1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_generate_qpoints_local                 2                         |
 |  /o-- cell_reduce_kpoints_internal                1                         |
@@ -1526,6 +1502,14 @@
 |  /                                                                          |
 | O-> model_efield_unchanged                        1           1      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- model_write_occ_eigenvalues                 1                         |
+|  /                                                                          |
+| O-> comms_gather_kp_integer                       1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_generate_psp                       3                         |
+|  /                                                                          |
+| O-> ion_atom_basis_ae_dealloc                     3           3      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- phonon_calculate                            1                         |
 |  /o-- bib_output                                  1                         |
 | |/                                                                          |
@@ -1533,25 +1517,37 @@
 |    /                                                                        |
 |   o-> comms_lcopy                                 1           1      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> check_forces_stresses                         1           1      0.00s  |
+|    /                                                                        |
+|   o-> firstd_output_forces                        1           1      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- model_read_occ_eigenvalues                 10                         |
 |  /                                                                          |
 | O-> comms_copy_bnd_real                          10          10      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> openbc_locps_initialise                       1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- ion_atom_descreen_psp                       3                         |
 |  /                                                                          |
 | O-> ion_atom_ae_dealloc                           3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_pseudo_scf                         3                         |
-|  /                                                                          |
-| O-> ion_atom_basis_pseudo_dealloc                 3           3      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- model_check_dependencies                    1                         |
 |  /                                                                          |
 | O-> model_pressure_unchanged                      1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_generate_psp                       3                         |
+|   o-- ion_atom_pseudo_scf                         3                         |
 |  /                                                                          |
-| O-> ion_atom_basis_ae_dealloc                     3           3      0.00s  |
+| O-> ion_atom_basis_pseudo_dealloc                 3           3      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- secondd_finalise                            1                         |
+|  /                                                                          |
+| O-> raman_finalise                                1           1      0.00s  |
+|    /                                                                        |
+|   o-> raman_empty_cache                           1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_continuation                          3                         |
 |  /                                                                          |
@@ -1564,13 +1560,17 @@
 |   o-> cell_num_supercells                         1           1      0.00s  |
 |   o-> algor_invert_real                           1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- wave_orthonormalise_over_wv_ks              5                         |
+|   o-- phonon_calculate                            1                         |
 |  /                                                                          |
-| O-> comms_copy_gv_complex                         5           5      0.00s  |
+| O-> secondd_symmetry_init                         1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- basis_initialise                            6                         |
 |  /                                                                          |
 | O-> basis_utils_prime_factors                     6           6      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- wave_orthonormalise_over_wv_ks              5                         |
+|  /                                                                          |
+| O-> comms_copy_gv_complex                         5           5      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- check_image_list                            1                         |
 |  /                                                                          |
@@ -1586,6 +1586,10 @@
 |  /                                                                          |
 | O-> cell_output_wrapped                           1           1      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- ion_atom_construct_psp                      3                         |
+|  /                                                                          |
+| O-> ion_atom_write_pwave                          3           3      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- comms_reduce_bnd_logical                    1                         |
 |  /o-- comms_reduce_gv_logical                     1                         |
 |  /o-- comms_reduce_kp_logical                     1                         |
@@ -1595,6 +1599,10 @@
 |   o-- model_check_dependencies                    1                         |
 |  /                                                                          |
 | O-> model_hubbard_u_unchanged                     1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- ion_atom_init_pseudo_atom                   3                         |
+|  /                                                                          |
+| O-> ion_atom_resolve_pseudo_cfg                   3           3      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- secondd_finalise                            1                         |
 |  /                                                                          |
@@ -1606,41 +1614,13 @@
 |  /                                                                          |
 | O-> ion_ion_initialise                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- ion_atom_init_pseudo_atom                   3                         |
-|  /                                                                          |
-| O-> ion_atom_resolve_pseudo_cfg                   3           3      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_construct_psp                      3                         |
-|  /                                                                          |
-| O-> ion_atom_write_beta                           3           3      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- model_write                                 1                         |
-|  /                                                                          |
-| O-> comms_barrier_farm                            1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                            2                         |
-|  /                                                                          |
-| O-> phonon_write_header                           2           2      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- ion_atom_generate_psp                       3                         |
 |  /                                                                          |
 | O-> ion_atom_output_psp                           3           3      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- density_write                               1                         |
+|   o-- model_write                                 1                         |
 |  /                                                                          |
-| O-> density_write_serial                          1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- wave_allocate_wv                            1                         |
-|  /                                                                          |
-| O-> wave_band_basis_initialise                    1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- ion_atom_construct_psp                      3                         |
-|  /                                                                          |
-| O-> ion_atom_write_pwave                          3           3      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- raman_finalise                              1                         |
-|  /                                                                          |
-| O-> raman_empty_cache                             1           1      0.00s  |
+| O-> comms_barrier_farm                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_dump                                   2                         |
 |  /                                                                          |
@@ -1650,9 +1630,17 @@
 |  /                                                                          |
 | O-> cell_dump_global                              2           2      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_reset                                 2                         |
+|   o-- ion_atom_construct_psp                      3                         |
 |  /                                                                          |
-| O-> dielectric_permittivity_deallocate            2           2      0.00s  |
+| O-> ion_atom_write_beta                           3           3      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- phonon_calculate                            2                         |
+|  /                                                                          |
+| O-> phonon_write_header                           2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- density_write                               1                         |
+|  /                                                                          |
+| O-> density_write_serial                          1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /o-- phonon_calculate                            1                         |
@@ -1667,21 +1655,25 @@
 |  /                                                                          |
 | O-> parameters_nspins                             2           2      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
+|   o-- model_read_occ_eigenvalues                  2                         |
 |  /                                                                          |
-| O-> tddft_set_tddft_on                            1           1      0.00s  |
+| O-> comms_copy_gv_real                            2           2      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- model_reset                                 2                         |
+|  /                                                                          |
+| O-> dielectric_permittivity_deallocate            2           2      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
 | O-> parameters_output                             1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_read_occ_eigenvalues                  2                         |
+|   o-- castep                                      1                         |
 |  /                                                                          |
-| O-> comms_copy_gv_real                            2           2      0.00s  |
+| O-> tddft_set_tddft_on                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- model_write_all                             1                         |
+|   o-- wave_allocate_wv                            1                         |
 |  /                                                                          |
-| O-> parameters_dump                               1           1      0.00s  |
+| O-> wave_band_basis_initialise                    1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- castep                                      1                         |
 |  /                                                                          |
@@ -1695,41 +1687,57 @@
 |  /                                                                          |
 | O-> find_strategy                                 1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
+|   o-- model_write_all                             1                         |
 |  /                                                                          |
-| O-> memory_system_initialise                      1           1      0.00s  |
+| O-> parameters_dump                               1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
+|   o-- comms_parallel_strategy                     1                         |
 |  /                                                                          |
-| O-> implicit_solvent_autosolv_check               1           1      0.00s  |
+| O-> reassign_nodes                                1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                            1                         |
+|   o-- cell_supercell                              1                         |
 |  /                                                                          |
-| O-> cell_rationalise_coordinates                  1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- check_forces_stresses                       1                         |
-|  /                                                                          |
-| O-> firstd_output_forces                          1           1      0.00s  |
+| O-> cell_recip_lattice                            1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- model_check_dependencies                    1                         |
 |  /                                                                          |
 | O-> model_kpoints_unchanged_2                     1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- bib_output                                  1                         |
+|   o-- phonon_calculate                            1                         |
 |  /                                                                          |
-| O-> comms_reduce_farm_logical                     1           1      0.00s  |
+| O-> cell_rationalise_coordinates                  1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- cell_supercell                              1                         |
 |  /                                                                          |
 | O-> cell_calculate_volume                         1           1      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> implicit_solvent_autosolv_check               1           1      0.00s  |
++-----------------------------------------------------------------------------+
 |   o-- phonon_initialise                           1                         |
 |  /                                                                          |
 | O-> comms_save_strategy                           1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- cell_supercell                              1                         |
+|   o-- castep                                      1                         |
 |  /                                                                          |
-| O-> cell_recip_lattice                            1           1      0.00s  |
+| O-> multigrid_dlmg_exit                           1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- castep                                      1                         |
+|  /                                                                          |
+| O-> memory_system_initialise                      1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- phonon_calculate                            1                         |
+|  /                                                                          |
+| O-> secondd_compare_kpoints                       1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- check_forces_stresses                       1                         |
+|  /                                                                          |
+| O-> firstd_output_forces                          1           1      0.00s  |
++-----------------------------------------------------------------------------+
+|   o-- bib_output                                  1                         |
+|  /                                                                          |
+| O-> comms_reduce_farm_logical                     1           1      0.00s  |
 +-----------------------------------------------------------------------------+
 |   o-- comms_parallel_strategy                     1                         |
 |  /                                                                          |
@@ -1739,26 +1747,18 @@
 |  /                                                                          |
 | O-> model_cell_constr_unchanged                   1           1      0.00s  |
 +-----------------------------------------------------------------------------+
-|   o-- phonon_calculate                            1                         |
-|  /                                                                          |
-| O-> secondd_compare_kpoints                       1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- castep                                      1                         |
-|  /                                                                          |
-| O-> multigrid_dlmg_exit                           1           1      0.00s  |
-+-----------------------------------------------------------------------------+
-|   o-- comms_parallel_strategy                     1                         |
-|  /                                                                          |
-| O-> reassign_nodes                                1           1      0.00s  |
-+-----------------------------------------------------------------------------+
 |   o-- ion_clebsch_gordan                          1                         |
 |  /                                                                          |
 | O-> init_factorial                                1           1      0.00s  |
 +-----------------------------------------------------------------------------+
+|   o-- raman_finalise                              1                         |
+|  /                                                                          |
+| O-> raman_empty_cache                             1           1      0.00s  |
++-----------------------------------------------------------------------------+
 Class of operation                  Time spent
-COMMS                                 610.73s
+COMMS                                 390.46s
 COMMS_GV                                0.00s
-COMMS_KP                                0.67s
+COMMS_KP                                0.69s
 COMMS_BND                               0.00s
 COMMS_FARM                              0.00s
      270 different subroutines and functions were traced

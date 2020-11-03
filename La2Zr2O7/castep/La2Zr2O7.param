@@ -15,10 +15,11 @@ mix_history_length : 30
 #geom_force_tol:0.005
 write_cell_structure: false
 geom_method   : LBFGS
-iprint:3
+iprint:1
 backup_interval : 3600
 continuation : La2Zr2O7.castep_bin
 
 %block devel_code
 PROF:*:ENDPROF
 %endblock devel_code
+
