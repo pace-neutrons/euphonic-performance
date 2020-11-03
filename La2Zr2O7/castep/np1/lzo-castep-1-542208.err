@@ -1,0 +1,19 @@
+cpu-bind=MASK - cn813, task  0  0 [155873]: mask 0xffffffffffff set
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           cn813
+  Local device:         mlx4_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+
+real	11m6.113s
+user	7m47.114s
+sys	3m4.595s
+rm: cannot remove ‘La2Zr2O7.bib’: No such file or directory
+rm: cannot remove ‘La_EXT_LDA_OTF.usp’: No such file or directory
+rm: cannot remove ‘Zr_EXT_LDA_OTF.usp’: No such file or directory
+rm: cannot remove ‘O_EXT_LDA_OTF.usp’: No such file or directory
