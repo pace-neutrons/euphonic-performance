@@ -1,4 +1,6 @@
 import os
+import re
+import glob
 from typing import List, Optional, Union, Tuple
 import warnings
 
@@ -7,9 +9,10 @@ from numpy import ndarray
 from numpy.ma.core import MaskedArray
 
 
-def get_dir(material: str, code: str, nproc: int) -> str:
+def get_dir(material: str, code: str, nproc: int,
+            suffix: Optional[str] = '') -> str:
     """Get name of directory containing profile files"""
-    direc = os.path.join(material, code, 'np' + str(nproc))
+    direc = os.path.join(material, code, 'np' + str(nproc) + suffix)
     return direc
 
 
@@ -36,6 +39,28 @@ def get_cprofile_fname(material: str, nproc: int) -> str:
 def get_timeit_fname(material: str, nproc: int) -> str:
     """Get name of custom output timeit file"""
     return f'{material}_np{nproc}_timeit.txt'
+
+
+def get_real_time_from_file(file_name: str) -> float:
+    """
+    Read the 'real' time as returned by the time command (example below)
+    and return it in seconds
+
+    real    9m24.355s
+    user    6m58.275s
+    sys     2m18.659s
+    """
+    pattern = re.compile('real\s*(\d+)m(\d+\.\d+)s')
+    with open(file_name, 'r') as f:
+        data = f.readlines()
+    for line in data:
+        res = pattern.match(line)
+        if res is not None:
+            break
+    if res is None:
+        raise ValueError(f'real time not found in {file_name}')
+    else:
+        return int(res.group(1))*60 + float(res.group(2))
 
 
 def get_func_prof_from_file(
@@ -198,8 +223,31 @@ def get_all_func_prof(
     return times, n_calls
 
 
+def  get_all_real_time(materials: List[str], nprocs: List[int],
+                       direc: Optional[str] = 'castep',
+                       suffix: Optional[str] = '-noprof'):
+    """
+    Get mean 'real' time output from Linux time tool for each material and
+    number of processors
+    """
+    avg_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
+    max_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
+    min_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
+    for i, material in enumerate(materials):
+        for j, nproc in enumerate(nprocs):
+            fnames = glob.glob(get_dir(material, direc, nproc, suffix) + '/*.err')
+            times = np.full(len(fnames), -1, dtype=np.float64)
+            for k, fname in enumerate(fnames):
+                times[k] = get_real_time_from_file(fname)
+            avg_times[i, j] = np.mean(times)
+            max_times[i, j] = np.amax(times)
+            min_times[i, j] = np.amin(times)
+    return avg_times, max_times, min_times
+
+
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 nprocs = [1, 2 ,4, 8, 12, 16, 24]
-times, nc = get_castep_all_func_prof(materials, nprocs, 'castep')
+times, nc = get_castep_all_func_prof(materials, nprocs, 'phonon_calculate')
+#times, nc = get_all_func_prof(['CaHgO2'], [1,2], 'run_band_structure', direc='')
 
-times, nc = get_all_func_prof(['CaHgO2'], [1,2], 'run_band_structure', direc='')
+avgt, maxt, mint = get_all_real_time(materials, nprocs)

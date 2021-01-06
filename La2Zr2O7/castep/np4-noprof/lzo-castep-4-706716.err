@@ -1,0 +1,21 @@
+cpu-bind=MASK - cn812, task  0  0 [162455]: mask 0xffffffffffff set
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           cn812
+  Local device:         mlx4_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+[cn812.scarf.rl.ac.uk:162475] 3 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
+[cn812.scarf.rl.ac.uk:162475] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+
+real	5m40.563s
+user	20m9.684s
+sys	2m19.581s
+rm: cannot remove ‘La2Zr2O7.bib’: No such file or directory
+rm: cannot remove ‘La_EXT_LDA_OTF.usp’: No such file or directory
+rm: cannot remove ‘Zr_EXT_LDA_OTF.usp’: No such file or directory
+rm: cannot remove ‘O_EXT_LDA_OTF.usp’: No such file or directory

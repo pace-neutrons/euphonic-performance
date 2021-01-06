@@ -1,0 +1,20 @@
+cpu-bind=MASK - cn884, task  0  0 [275955]: mask 0xffffffffffff set
+cat: run_noprof_benchmark.sbatch: No such file or directory
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           cn884
+  Local device:         mlx4_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+[cn884.scarf.rl.ac.uk:276040] 3 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
+[cn884.scarf.rl.ac.uk:276040] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+
+real	0m52.455s
+user	3m23.108s
+sys	0m4.521s
+rm: cannot remove ‘Nb-181818-s0.5-NCP19-vib-disp.bib’: No such file or directory
+rm: cannot remove ‘Nb_NCP19_LDA_OTF.usp’: No such file or directory
