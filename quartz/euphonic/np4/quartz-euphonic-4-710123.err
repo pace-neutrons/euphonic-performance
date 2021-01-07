@@ -1,0 +1,6 @@
+cpu-bind=MASK - cn878, task  0  0 [210155]: mask 0xffffffffffff set
+cat: run_phonopy.sbatch: No such file or directory
+
+real	0m13.801s
+user	0m54.829s
+sys	0m0.449s
