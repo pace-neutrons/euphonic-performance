@@ -225,7 +225,7 @@ def get_all_func_prof(
 
 def  get_all_real_time(materials: List[str], nprocs: List[int],
                        direc: Optional[str] = 'castep',
-                       suffix: Optional[str] = '-noprof'):
+                       suffix: Optional[str] = ''):
     """
     Get mean 'real' time output from Linux time tool for each material and
     number of processors
@@ -247,7 +247,9 @@ def  get_all_real_time(materials: List[str], nprocs: List[int],
 
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 nprocs = [1, 2 ,4, 8, 12, 16, 24]
-times, nc = get_castep_all_func_prof(materials, nprocs, 'phonon_calculate')
+#times, nc = get_castep_all_func_prof(materials, nprocs, 'phonon_calculate')
 #times, nc = get_all_func_prof(['CaHgO2'], [1,2], 'run_band_structure', direc='')
 
-avgt, maxt, mint = get_all_real_time(materials, nprocs)
+#avgt, maxt, mint = get_all_real_time(materials, nprocs, suffix='-noprof')
+avgtp, maxtp, mintp = get_all_real_time(['CaHgO2'], [1,2,4], direc='phonopy', suffix='')
+avgt, maxt, mint = get_all_real_time(['CaHgO2'], [1,2,4], direc='euphonic', suffix='')

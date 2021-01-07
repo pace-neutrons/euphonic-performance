@@ -1,0 +1,8 @@
+cpu-bind=MASK - cn787, task  0  0 [79164]: mask 0xc00000c00 set
+sudo: sorry, you must have a tty to run sudo
+
+real	0m12.409s
+user	0m43.018s
+sys	0m1.058s
+rm: cannot remove ‘run_phonopy.py’: No such file or directory
+sudo: sorry, you must have a tty to run sudo

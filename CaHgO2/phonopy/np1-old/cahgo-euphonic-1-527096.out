@@ -1,0 +1,4 @@
+SLURM_JOB_NUM_NODES:  1
+SLURM_CPUS_PER_TASK:  1
+SLURM_ARRAY_TASK_ID:  1
+/home/vol03/scarf453/.scarf18_py36_libs/lib/python3.6/site-packages:/apps/python/3.6.5/intel/17.0.2/lib/python3.6/site-packages:/apps/numpy/1.14.0/intel/17.0.2/python-3.6.5/lib/python3.6/site-packages

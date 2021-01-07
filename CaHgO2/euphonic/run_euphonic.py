@@ -29,29 +29,25 @@ else:
     profile = False
 profile_data = []
 
-fc = ForceConstants.from_phonopy(summary_name='../mp-7041-20180417.yaml')
-qpts = np.loadtxt('../../qpts_25000.txt')
-#qpts = qpts[:250]
+start = start_timer(profile)
+fc = ForceConstants.from_phonopy(summary_name='../../phonopy/mp-7041-20180417.yaml')
+end_timer(profile_data, 'euphonic from_phonopy', start)
+qpts = np.loadtxt('../../../qpts_25000.txt')
 
 start = start_timer(profile)
 phon = fc.calculate_qpoint_phonon_modes(
     qpts, asr='reciprocal', reduce_qpts=False, **interpolate_kwargs)
 end_timer(profile_data, 'euphonic calculate_qpoint_phonon_modes', start)
 
-start = start_timer(profile)
-sf = phon.calculate_structure_factor()
-end_timer(profile_data, 'euphonic calculate_structure_factor', start)
+if interpolate_kwargs['use_c'] == False:
+    start = start_timer(profile)
+    sf = phon.calculate_structure_factor()
+    end_timer(profile_data, 'euphonic calculate_structure_factor', start)
 
-ebins = np.arange(200)*ureg('meV')
-start = start_timer(profile)
-sqw = sf.calculate_sqw_map(ebins)
-end_timer(profile_data, 'euphonic calculate_sqw_map', start)
-
-phonon = phonopy.load('../mp-7041-20180417.yaml')
-
-start = start_timer(profile)
-phonon.run_band_structure(qpts, with_eigenvectors=True)
-end_timer(profile_data, 'phonopy run_band_structure', start)
+    ebins = np.arange(200)*ureg('meV')
+    start = start_timer(profile)
+    sqw = sf.calculate_sqw_map(ebins)
+    end_timer(profile_data, 'euphonic calculate_sqw_map', start)
 
 if profile:        
     with open(profile_out, 'w') as f:

@@ -1,0 +1,4 @@
+euphonic calculate_qpoint_phonon_modes  1.241
+euphonic calculate_structure_factor  0.156
+euphonic calculate_sqw_map  13.733
+phonopy run_band_structure  16.818

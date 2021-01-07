@@ -1,0 +1,7 @@
+cpu-bind=MASK - cn874, task  0  0 [265651]: mask 0x800800800800 set
+sudo: sorry, you must have a tty to run sudo
+
+real	0m17.085s
+user	0m53.318s
+sys	0m1.430s
+sudo: sorry, you must have a tty to run sudo
