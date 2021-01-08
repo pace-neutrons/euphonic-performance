@@ -3,7 +3,7 @@
 #SBATCH -p devel
 #SBATCH --exclusive
 #SBATCH -N 1
-#SBATCH -n 2
+#SBATCH -n 24
 #SBATCH -c 1
 #SBATCH -t 10:00
 #SBATCH --job-name=euphonic_quartz

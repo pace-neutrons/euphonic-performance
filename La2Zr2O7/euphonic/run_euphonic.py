@@ -4,6 +4,9 @@ import numpy as np
 import seekpath
 import sys
 
+import euphonic as eu
+print(f'Euphonic version: {eu.__version__}')
+
 def start_timer(profile):
     if profile:
         return timer()
@@ -28,23 +31,25 @@ else:
     profile = False
 profile_data = []
 
+start = start_timer(profile)
 fc = ForceConstants.from_castep('../../castep/La2Zr2O7.castep_bin')
+end_timer(profile_data, 'euphonic from_castep', start)
 qpts = np.loadtxt('../../../qpts_25000.txt')
-#qpts = qpts[:250]
 
 start = start_timer(profile)
 phon = fc.calculate_qpoint_phonon_modes(
-qpts, asr='reciprocal', reduce_qpts=False, **interpolate_kwargs)
+    qpts, asr='reciprocal', reduce_qpts=False, **interpolate_kwargs)
 end_timer(profile_data, 'euphonic calculate_qpoint_phonon_modes', start)
 
-start = start_timer(profile)
-sf = phon.calculate_structure_factor()
-end_timer(profile_data, 'euphonic calculate_structure_factor', start)
+if interpolate_kwargs['use_c'] == False:
+    start = start_timer(profile)
+    sf = phon.calculate_structure_factor()
+    end_timer(profile_data, 'euphonic calculate_structure_factor', start)
 
-ebins = np.arange(200)*ureg('meV')
-start = start_timer(profile)
-sqw = sf.calculate_sqw_map(ebins)
-end_timer(profile_data, 'euphonic calculate_sqw_map', start)
+    ebins = np.arange(200)*ureg('meV')
+    start = start_timer(profile)
+    sqw = sf.calculate_sqw_map(ebins)
+    end_timer(profile_data, 'euphonic calculate_sqw_map', start)
 
 if profile:        
     with open(profile_out, 'w') as f:

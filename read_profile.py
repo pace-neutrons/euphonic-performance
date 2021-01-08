@@ -195,61 +195,84 @@ def get_castep_all_func_prof(
     return times, n_calls
 
 
-def get_all_func_prof(
-        materials: List[str], nprocs: List[int], function_name: str,
-        file_type: Optional[str] = 'cprofile',
+def get_all_prof(
+        materials: List[str], nprocs: List[int],
         direc: Optional[str] = 'euphonic',
-        ignore_missing: Optional[bool] = False
-        ) -> Union[Tuple[ndarray, ndarray],
-                   Tuple[MaskedArray, MaskedArray]]:
+        suffix: Optional[str] = '',
+        file_type: Optional[str] = 'cprofile',
+        func_name: Optional[str] = None
+        ) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
     """
-    Read Euphonic profiling information for a particular function from
-    all materials/nprocessor directories
-    """
-    times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
-    n_calls = np.full((len(materials), len(nprocs)), -1, dtype=np.int32)
-    for i, mat in enumerate(materials):
-        for j, proc in enumerate(nprocs):
-            if file_type == 'cprofile':
-                fname = get_cprofile_fname(mat, proc)
-            elif file_type=='timeit':
-                fname = get_timeit_fname(mat, proc)
-            else:
-                raise ValueError(f'File type {file_type} not recognised')
-            fname = os.path.join(get_dir(mat, direc, proc), fname)
-            times[i, j], n_calls[i, j] = get_func_prof_from_file(
-                fname, function_name, file_type=file_type,
-                ignore_missing=ignore_missing)
-    return times, n_calls
+    Read profiling information where there is 1 output file per profiling run
+    from all materials/nprocessor directories
 
-
-def  get_all_real_time(materials: List[str], nprocs: List[int],
-                       direc: Optional[str] = 'castep',
-                       suffix: Optional[str] = ''):
-    """
-    Get mean 'real' time output from Linux time tool for each material and
-    number of processors
+    Parameters
+    ----------
+    materials
+        Materials directories to look in
+    nprocs
+        Processor directories to look in
+    direc
+        Subdirectory to look in. Usually the modelling code name
+    suffix
+        Add this suffix onto the processor directories e.g. if they are named
+        np1-cprofile, np2-cprofile etc. this should be '-cprofile'
+    file_type
+        The type of file to be read, one of {'cprofile', 'timeit', 'time'}.
+        'timeit' is custom per-function profiling using Python timeit, 'time'
+        is output from the Linux time tool.
+   func_name
+        The profiled function to read information for. Required if file_type
+        is 'cprofile' or 'timeit'. Does nothing for 'time'.
     """
     avg_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     max_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     min_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
-    for i, material in enumerate(materials):
-        for j, nproc in enumerate(nprocs):
-            fnames = glob.glob(get_dir(material, direc, nproc, suffix) + '/*.err')
+    n_calls = np.full((len(materials), len(nprocs)), -1, dtype=np.int32)
+    for i, mat in enumerate(materials):
+        for j, proc in enumerate(nprocs):
+            if file_type == 'cprofile':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*cprofile*txt')
+            elif file_type=='timeit':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*timeit*txt')
+            elif file_type=='time':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*.err')
+            else:
+                raise ValueError(f'File type {file_type} not recognised')
             times = np.full(len(fnames), -1, dtype=np.float64)
-            for k, fname in enumerate(fnames):
-                times[k] = get_real_time_from_file(fname)
+            n_calls_ij = np.full(len(fnames), -1, dtype=np.int32)
+            if file_type == 'time':
+                for k, fname in enumerate(fnames):
+                    times[k] = get_real_time_from_file(fname)
+                    # n_calls doesn't make sense if not profiling a specific
+                    # function, so just set to 1
+                    n_calls_ij[k] = 1
+            else:
+                for k, fname in enumerate(fnames):
+                    times[k], n_calls_ij[k] = get_func_prof_from_file(
+                        fname, func_name, file_type=file_type,
+                        ignore_missing=False)
+            if not np.all(n_calls_ij == n_calls_ij[0]):
+                 raise RuntimeError((f'For {mat}, processor {proc}, suffix ',
+                                     f'{suffix}, n_calls for {func_name} are ',
+                                     f'not equal: {n_calls_ij}'))
+            n_calls[i, j] = n_calls_ij[0]
             avg_times[i, j] = np.mean(times)
             max_times[i, j] = np.amax(times)
             min_times[i, j] = np.amin(times)
-    return avg_times, max_times, min_times
+    return n_calls, avg_times, max_times, min_times
 
 
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 nprocs = [1, 2 ,4, 8, 12, 16, 24]
 #times, nc = get_castep_all_func_prof(materials, nprocs, 'phonon_calculate')
-#times, nc = get_all_func_prof(['CaHgO2'], [1,2], 'run_band_structure', direc='')
+#times, nc = get_all_prof(['CaHgO2'], [1,2], func_name='run_band_structure', direc='')
 
-#avgt, maxt, mint = get_all_real_time(materials, nprocs, suffix='-noprof')
-avgtp, maxtp, mintp = get_all_real_time(['CaHgO2'], [1,2,4], direc='phonopy', suffix='')
-avgt, maxt, mint = get_all_real_time(['CaHgO2'], [1,2,4], direc='euphonic', suffix='')
+#_, avgtp, maxtp, mintp = get_all_prof(['CaHgO2'], [1,2,4], direc='phonopy', suffix='', file_type='time')
+#_, avgt, maxt, mint = get_all_prof(['La2Zr2O7'], [1,2,4,8,12,16,24], direc='euphonic', suffix='', file_type='time')
+_, avgt, maxt, mint = get_all_prof(materials, nprocs, direc='euphonic', suffix='',
+                                   func_name='calculate_qpoint_phonon_modes',
+                                   file_type='time')
+#_, avgt, maxt, mint = get_all_prof(['La2Zr2O7', 'quartz'], [1], direc='euphonic',
+#                                   suffix='-cprofile', func_name='calculate_qpoint_phonon_modes', file_type='cprofile')
+

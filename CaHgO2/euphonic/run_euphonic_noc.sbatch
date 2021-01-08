@@ -25,7 +25,7 @@ echo $PYTHONPATH
 cp run_euphonic.py np${SLURM_ARRAY_TASK_ID}-noc
 cd np${SLURM_ARRAY_TASK_ID}-noc
 
-time python run_euphonic.py -1 CaHgO2_np${SLURM_ARRAY_TASK_ID}_timeit_noc.txt
+time python run_euphonic.py -1 CaHgO2_np${SLURM_ARRAY_TASK_ID}_${SLURM_JOB_ID}_timeit_noc.txt
 
 rm run_euphonic.py
 

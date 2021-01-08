@@ -1,17 +1,19 @@
 #!/bin/bash
+#SBATCH -C scarf18
 #SBATCH -p devel
 #SBATCH --exclusive
-#SBATCH -C scarf18
 #SBATCH -N 1
-#SBATCH -n 2
+#SBATCH -n 24
 #SBATCH -c 1
-#SBATCH -t 10:00
+#SBATCH -t 30:00
 #SBATCH --job-name=euphonic_lzo
-#SBATCH --array=1,2
+#SBATCH --array=1,2,4,8,12,16,24
 #SBATCH -v
 #SBATCH -o np%a/lzo-euphonic-%a-%j.out
 #SBATCH -e np%a/lzo-euphonic-%a-%j.err
 
+lscpu
+cat run_euphonic.sbatch
 
 echo 'SLURM_JOB_NUM_NODES: ' ${SLURM_JOB_NUM_NODES}
 echo 'SLURM_CPUS_PER_TASK: ' ${SLURM_CPUS_PER_TASK}
@@ -25,14 +27,7 @@ echo $PYTHONPATH
 cp run_euphonic.py np${SLURM_ARRAY_TASK_ID}
 cd np${SLURM_ARRAY_TASK_ID}
 
-time python -m cProfile -s time run_euphonic.py ${SLURM_ARRAY_TASK_ID} > La2Zr2O7_np${SLURM_ARRAY_TASK_ID}_cprofile.txt
-time python run_euphonic.py ${SLURM_ARRAY_TASK_ID} La2Zr2O7_np${SLURM_ARRAY_TASK_ID}_timeit.txt
-
-if [ ${SLURM_ARRAY_TASK_ID} -eq 1 ]
-then
-    time python -m cProfile -s time run_euphonic.py -1 > La2Zr2O7_np${SLURM_ARRAY_TASK_ID}_cprofile_noc.txt
-    time python run_euphonic.py -1 La2Zr2O7_np${SLURM_ARRAY_TASK_ID}_timeit_noc.txt
-fi
+time python run_euphonic.py ${SLURM_ARRAY_TASK_ID} lzo_np${SLURM_ARRAY_TASK_ID}_${SLURM_JOB_ID}_timeit.txt
 
 rm run_euphonic.py
 
