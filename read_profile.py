@@ -66,7 +66,8 @@ def get_real_time_from_file(file_name: str) -> float:
 def get_func_prof_from_file(
         file_name: str, function_name: str,
         file_type: Optional[str] = 'castep',
-        ignore_missing: Optional[bool] = True
+        ignore_missing: Optional[bool] = True,
+        printl: Optional[bool] = False
         ) -> Union[Tuple[None, None],
                    Tuple[ndarray, ndarray]]:
     """
@@ -74,16 +75,19 @@ def get_func_prof_from_file(
     particular profiling file. If ignore_missing=False, raise an
     error if the function information can't be found.
     """
-    print(f'Reading {file_name}')
+    if printl:
+        print(f'Reading {file_name}')
     with open(file_name, 'r') as f:
         data = f.readlines()
     if file_type == 'castep':
         timing, n_calls = extract_castep_func_prof(
-            data, function_name, file_name)
+            data, function_name, file_name, printl)
     elif file_type == 'cprofile':
-        timing, n_calls = extract_cprofile_func_prof(data, function_name)
+        timing, n_calls = extract_cprofile_func_prof(
+                data, function_name, printl)
     elif file_type == 'timeit':
-        timing, n_calls = extract_timeit_func_prof(data, function_name)
+        timing, n_calls = extract_timeit_func_prof(
+                data, function_name, printl)
     else:
         raise ValueError(f'File type {file_type} not recognised')
     if timing is None and not ignore_missing:
@@ -91,7 +95,8 @@ def get_func_prof_from_file(
     return timing, n_calls
 
 
-def extract_castep_func_prof(data: List[str], func_name: str, file_name: str):
+def extract_castep_func_prof(data: List[str], func_name: str, file_name: str,
+                             printl: Optional[bool] = False):
     """
     Read profiling information for a particular function from a
     CASTEP .profile file
@@ -100,7 +105,8 @@ def extract_castep_func_prof(data: List[str], func_name: str, file_name: str):
     timing = None
     for line in data:
         if ' ' + func_name + ' ' in line:
-            print(line)
+            if printl:
+                print(line)
             split_line = line.split()
             try:
                 timing = float(split_line[-2].strip('s'))
@@ -116,7 +122,8 @@ def extract_castep_func_prof(data: List[str], func_name: str, file_name: str):
     return timing, n_calls
 
 
-def extract_cprofile_func_prof(data: List[str], func_name: str):
+def extract_cprofile_func_prof(data: List[str], func_name: str,
+                               printl: Optional[bool] = False):
     """
     Read profiling information for a particular function from a
     cProfile output file
@@ -125,7 +132,8 @@ def extract_cprofile_func_prof(data: List[str], func_name: str):
     timing = None
     for line in data:
         if func_name in line:
-            print(line)
+            if printl:
+                print(line)
             split_line = line.split()
             n_calls = int(split_line[0])
             timing = float(split_line[3])  # cumulative time
@@ -133,7 +141,8 @@ def extract_cprofile_func_prof(data: List[str], func_name: str):
     return timing, n_calls
 
 
-def extract_timeit_func_prof(data: List[str], func_name: str):
+def extract_timeit_func_prof(data: List[str], func_name: str,
+                             printl: Optional[bool] = False):
     """
     Read profiling information for a particular function for
     timeit data
@@ -142,7 +151,8 @@ def extract_timeit_func_prof(data: List[str], func_name: str):
     timing = None
     for line in data:
         if func_name in line:
-            print(line)
+            if printl:
+                print(line)
             split_line = line.split()
             timing = float(split_line[-1])
             break
@@ -151,7 +161,8 @@ def extract_timeit_func_prof(data: List[str], func_name: str):
 
 def get_castep_parallel_func_prof(
         material: str, nproc: int, function_name: str,
-        ignore_missing: Optional[bool] = True
+        ignore_missing: Optional[bool] = True,
+        printl: Optional[bool] = False
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
     """
@@ -200,7 +211,8 @@ def get_all_prof(
         direc: Optional[str] = 'euphonic',
         suffix: Optional[str] = '',
         file_type: Optional[str] = 'cprofile',
-        func_name: Optional[str] = None
+        func_name: Optional[str] = None,
+        printl: Optional[bool] = False
         ) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
     """
     Read profiling information where there is 1 output file per profiling run
@@ -224,6 +236,8 @@ def get_all_prof(
    func_name
         The profiled function to read information for. Required if file_type
         is 'cprofile' or 'timeit'. Does nothing for 'time'.
+    printl
+        Whether to print debugging information
     """
     avg_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     max_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
@@ -241,6 +255,10 @@ def get_all_prof(
                 raise ValueError(f'File type {file_type} not recognised')
             times = np.full(len(fnames), -1, dtype=np.float64)
             n_calls_ij = np.full(len(fnames), -1, dtype=np.int32)
+            if len(fnames) == 0:
+                raise FileNotFoundError((
+                    f'{file_type} file not found in '
+                    f'{get_dir(mat, direc, proc, suffix)}'))
             if file_type == 'time':
                 for k, fname in enumerate(fnames):
                     times[k] = get_real_time_from_file(fname)
@@ -251,7 +269,7 @@ def get_all_prof(
                 for k, fname in enumerate(fnames):
                     times[k], n_calls_ij[k] = get_func_prof_from_file(
                         fname, func_name, file_type=file_type,
-                        ignore_missing=False)
+                        ignore_missing=False, printl=printl)
             if not np.all(n_calls_ij == n_calls_ij[0]):
                  raise RuntimeError((f'For {mat}, processor {proc}, suffix ',
                                      f'{suffix}, n_calls for {func_name} are ',
