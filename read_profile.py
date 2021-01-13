@@ -88,6 +88,9 @@ def get_func_prof_from_file(
     elif file_type == 'timeit':
         timing, n_calls = extract_timeit_func_prof(
                 data, function_name, printl)
+    elif file_type == 'cext':
+        timing, n_calls = extract_cext_func_prof(
+                data, function_name, printl)
     else:
         raise ValueError(f'File type {file_type} not recognised')
     if timing is None and not ignore_missing:
@@ -159,24 +162,51 @@ def extract_timeit_func_prof(data: List[str], func_name: str,
     return timing, n_calls
 
 
-def get_castep_parallel_func_prof(
+def extract_cext_func_prof(data: List[str], func_name: str,
+                             printl: Optional[bool] = False):
+    """
+    Read profiling information for a particular function for
+    custom C extension profiling data
+    """
+    timing = None
+    for line in data:
+        if func_name in line:
+            if printl:
+                print(line)
+            split_line = line.split()
+            timing = float(split_line[-1])
+            n_calls = float(split_line[-2])
+            break
+    return timing, n_calls
+
+
+def get_parallel_func_prof(
         material: str, nproc: int, function_name: str,
+        file_type: Optional[str] = 'castep',
+        suffix: Optional[str] = '',
         ignore_missing: Optional[bool] = True,
         printl: Optional[bool] = False
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
     """
-    Read profiling information for a particular function from all
-    .profile files within a directory. If some files don't contain a
-    certain function (e.g. some functions are only run on the 1st
-    processor) return a masked array
+    Read parallel profiling information for a particular function from all
+    profiling files in a directory, where there is one file produced
+    per thread. If some files don't contain a certain function (e.g.
+    some functions are only run on the 1st processor) return a masked
+    array
     """
-    fnames = get_castep_fnames(material, nproc)
+    if file_type == 'castep':
+        fnames = get_castep_fnames(material, nproc)
+    elif file_type == 'cext':
+        fnames = glob.glob(get_dir(
+            material, 'euphonic', nproc, suffix) + '/*.profile')
+    else:
+        raise ValueError(f'File type {file_type} not recognised')
     times = np.full(len(fnames), -1, dtype=np.float64)
     n_calls = np.full(len(fnames), -1, dtype=np.int32)
     for i, fname in enumerate(fnames):
         times_i, n_calls_i = get_func_prof_from_file(
-            fname, function_name, file_type='castep',
+            fname, function_name, file_type=file_type,
             ignore_missing=ignore_missing)
         if times_i is None:
             if not isinstance(times_i, np.ma.MaskedArray):
@@ -188,21 +218,24 @@ def get_castep_parallel_func_prof(
     return times, n_calls
 
 
-def get_castep_all_func_prof(
+def get_all_parallel_func_prof(
         materials: List[str], nprocs: List[int], function_name: str,
+        suffix: Optional[str] = '',
+        file_type: Optional[str] = 'castep',
         ignore_missing: Optional[bool] = True
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
     """
-    Read CASTEP profiling information for a particular function from
-    all materials/nprocessor directories
+    Read parallel profiling information for a particular function from all
+    profiling files in all material/nprocs directories, where there is one
+    file produced per thread
     """
     times = np.empty((len(materials), len(nprocs)), dtype=object)
     n_calls = np.empty((len(materials), len(nprocs)), dtype=object)
     for i, mat in enumerate(materials):
         for j, proc in enumerate(nprocs):
-            (times[i, j], n_calls[i, j]) = get_castep_parallel_func_prof(
-                mat, proc, function_name)
+            (times[i, j], n_calls[i, j]) = get_parallel_func_prof(
+                mat, proc, function_name, file_type=file_type, suffix=suffix)
     return times, n_calls
 
 
@@ -279,18 +312,3 @@ def get_all_prof(
             max_times[i, j] = np.amax(times)
             min_times[i, j] = np.amin(times)
     return n_calls, avg_times, max_times, min_times
-
-
-materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
-nprocs = [1, 2 ,4, 8, 12, 16, 24]
-#times, nc = get_castep_all_func_prof(materials, nprocs, 'phonon_calculate')
-#times, nc = get_all_prof(['CaHgO2'], [1,2], func_name='run_band_structure', direc='')
-
-#_, avgtp, maxtp, mintp = get_all_prof(['CaHgO2'], [1,2,4], direc='phonopy', suffix='', file_type='time')
-#_, avgt, maxt, mint = get_all_prof(['La2Zr2O7'], [1,2,4,8,12,16,24], direc='euphonic', suffix='', file_type='time')
-_, avgt, maxt, mint = get_all_prof(materials, nprocs, direc='euphonic', suffix='',
-                                   func_name='calculate_qpoint_phonon_modes',
-                                   file_type='time')
-#_, avgt, maxt, mint = get_all_prof(['La2Zr2O7', 'quartz'], [1], direc='euphonic',
-#                                   suffix='-cprofile', func_name='calculate_qpoint_phonon_modes', file_type='cprofile')
-
