@@ -9,11 +9,11 @@
 #SBATCH --job-name=euphonic_nb
 #SBATCH --array=1
 #SBATCH -v
-#SBATCH -o np%a-noc-cprofile/nb-euphonic-%a-%j.out
-#SBATCH -e np%a-noc-cprofile/nb-euphonic-%a-%j.err
+#SBATCH -o np%a-noc-sf-cprofile/nb-euphonic-%a-%j.out
+#SBATCH -e np%a-noc-sf-cprofile/nb-euphonic-%a-%j.err
 
 lscpu
-cat run_euphonic_noc_cprofile.sbatch
+cat run_euphonic_noc_sf_cprofile.sbatch
 
 echo 'SLURM_JOB_NUM_NODES: ' ${SLURM_JOB_NUM_NODES}
 echo 'SLURM_CPUS_PER_TASK: ' ${SLURM_CPUS_PER_TASK}
@@ -24,10 +24,10 @@ sudo /usr/local/bin/enable_no_turbo.sh
 module load python/3.6.5-intel-17.0.2 imkl/2018.3.222-iompi-2018b
 export PYTHONPATH=/home/vol03/scarf453/.scarf18_py36_libs/lib/python3.6/site-packages:$PYTHONPATH
 echo $PYTHONPATH
-cp run_euphonic.py np${SLURM_ARRAY_TASK_ID}-noc-cprofile
-cd np${SLURM_ARRAY_TASK_ID}-noc-cprofile
+cp run_euphonic.py np${SLURM_ARRAY_TASK_ID}-noc-sf-cprofile
+cd np${SLURM_ARRAY_TASK_ID}-noc-sf-cprofile
 
-time python -m cProfile -s time run_euphonic.py -1 > nb_np${SLURM_ARRAY_TASK_ID}_cprofile_noc.txt
+time python -m cProfile -s time run_euphonic.py -1 nb_np${SLURM_ARRAY_TASK_ID}_${SLURM_JOB_ID}_timeit_noc_sf.txt 1 > nb_np${SLURM_ARRAY_TASK_ID}_cprofile_noc_sf.txt
 
 rm run_euphonic.py
 

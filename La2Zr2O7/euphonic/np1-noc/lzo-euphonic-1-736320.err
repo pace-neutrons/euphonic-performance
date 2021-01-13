@@ -1,0 +1,6 @@
+cpu-bind=MASK - cn818, task  0  0 [120670]: mask 0xffffffffffff set
+
+real	0m37.435s
+user	13m57.190s
+sys	0m21.015s
+rm: cannot remove ‘run_euphonic.py’: No such file or directory

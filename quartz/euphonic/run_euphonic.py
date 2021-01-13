@@ -32,6 +32,11 @@ else:
     profile = False
 profile_data = []
 
+if len(sys.argv) > 3 and int(sys.argv[3]) == 1:
+    calc_sf = True
+else:
+    calc_sf = False
+
 start = start_timer(profile)
 fc = ForceConstants.from_castep('../../castep/quartz.castep_bin')
 end_timer(profile_data, 'euphonic from_castep', start)
@@ -42,7 +47,7 @@ phon = fc.calculate_qpoint_phonon_modes(
     qpts, asr='reciprocal', reduce_qpts=False, **interpolate_kwargs)
 end_timer(profile_data, 'euphonic calculate_qpoint_phonon_modes', start)
 
-if interpolate_kwargs['use_c'] == False:
+if calc_sf:
     start = start_timer(profile)
     sf = phon.calculate_structure_factor()
     end_timer(profile_data, 'euphonic calculate_structure_factor', start)
