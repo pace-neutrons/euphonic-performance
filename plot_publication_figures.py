@@ -13,10 +13,10 @@ nprocs = [1, 2, 4, 8, 12, 16, 24]
 # Print table comparing interpolation vs. sf times
 _, avg_interpolate, _, _ = get_all_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
-        suffix='-noc', func_name='calculate_qpoint_phonon_modes')
+        suffix='-noc-sf', func_name='calculate_qpoint_phonon_modes')
 _, avg_sf, _, _ = get_all_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
-        suffix='-noc', func_name='calculate_structure_factor')
+        suffix='-noc-sf', func_name='calculate_structure_factor')
 print(f'|{"Material":30}|{"Interpolation":13}|{"Structure Factor":16}|')
 print(f'|{materials[0]:30}|{avg_interpolate[0][0]:13.4f}|{avg_sf[0][0]:16.4f}|')
 print(f'|{materials[1]:30}|{avg_interpolate[1][0]:13.4f}|{avg_sf[1][0]:16.4f}|')
