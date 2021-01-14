@@ -12,7 +12,7 @@ CPU family:            6
 Model:                 85
 Model name:            Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz
 Stepping:              4
-CPU MHz:               2266.906
+CPU MHz:               2168.200
 CPU max MHz:           3700.0000
 CPU min MHz:           1000.0000
 BogoMIPS:              5200.00
@@ -33,7 +33,7 @@ Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca 
 #SBATCH -c 1
 #SBATCH -t 30:00
 #SBATCH --job-name=euphonic_lzo
-#SBATCH --array=1,2,4,8,12,16,24
+#SBATCH --array=24
 #SBATCH -v
 #SBATCH -o np%a-cext-100k/lzo-euphonic-%a-%j.out
 #SBATCH -e np%a-cext-100k/lzo-euphonic-%a-%j.err
