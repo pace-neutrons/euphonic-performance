@@ -1,4 +1,4 @@
-total                          000001   0.1288
-calculate_dyn_mat_at_q         001042   0.1214
+total                          000001   0.1084
+calculate_dyn_mat_at_q         001042   0.1045
 calculate_dipole_correction    000000   0.0000
-diagonalise_dyn_mat            001042   0.0072
+diagonalise_dyn_mat            001042   0.0037

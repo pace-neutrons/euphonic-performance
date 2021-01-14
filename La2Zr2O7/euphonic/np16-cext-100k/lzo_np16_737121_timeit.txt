@@ -1,2 +1,0 @@
-euphonic from_castep  0.047
-euphonic calculate_qpoint_phonon_modes  8.091
