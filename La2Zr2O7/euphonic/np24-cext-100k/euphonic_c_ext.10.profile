@@ -1,4 +1,4 @@
-total                          000001   3.4594
-calculate_dyn_mat_at_q         004167   0.6533
+total in for loop              000001   3.3956
+calculate_dyn_mat_at_q         004167   0.6446
 calculate_dipole_correction    000000   0.0000
-diagonalise_dyn_mat            004167   2.7527
+diagonalise_dyn_mat            004167   2.6988
