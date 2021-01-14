@@ -102,49 +102,53 @@ ax.set_ylabel('Speedup')
 ax.legend()
 #plt.savefig('figures/euphonic_scaling.pdf')
 
-def get_max_from_parallel_prof(parallel_times):
-    max_time = np.zeros(parallel_times.shape)
+def reduce_parallel_prof(parallel_times, op='mean'):
+    reduced_time = np.zeros(parallel_times.shape)
     for i in range(len(parallel_times)):
         for j in range(len(parallel_times[0])):
-            max_time[i, j] = np.amax(parallel_times[i, j])
-    return max_time
-materials = [materials[0]]
+            if op == 'mean':
+                reduced_time[i, j] = np.mean(parallel_times[i, j])
+            elif op == 'max':
+                reduced_time[i, j] = np.amax(parallel_times[i, j])
+    return reduced_time
 _, cext_calc_ph, maxt_calc_ph, mint_calc_ph = get_all_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='timeit',
-        suffix='-cext-100k', func_name='calculate_qpoint_phonon_modes')
-parallel_cext_total, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'total', file_type='cext', suffix='-cext-100k')
-cext_total = get_max_from_parallel_prof(parallel_cext_total)
+        suffix='-cext', func_name='calculate_qpoint_phonon_modes')
+parallel_cext_par, _ = get_all_parallel_func_prof(
+    materials, nprocs, 'total in parallel section', file_type='cext', suffix='-cext')
+cext_par = reduce_parallel_prof(parallel_cext_par)
 parallel_cext_calc_dyn_mat, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'calculate_dyn_mat_at_q', file_type='cext', suffix='-cext-100k')
-cext_calc_dyn_mat = get_max_from_parallel_prof(parallel_cext_calc_dyn_mat)
+    materials, nprocs, 'calculate_dyn_mat_at_q', file_type='cext', suffix='-cext')
+cext_calc_dyn_mat = reduce_parallel_prof(parallel_cext_calc_dyn_mat)
 parallel_cext_calc_dipole, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'calculate_dipole_correction', file_type='cext', suffix='-cext-100k')
-cext_calc_dipole = get_max_from_parallel_prof(parallel_cext_calc_dipole)
+    materials, nprocs, 'calculate_dipole_correction', file_type='cext', suffix='-cext')
+cext_calc_dipole = reduce_parallel_prof(parallel_cext_calc_dipole)
 parallel_cext_diag_dyn_mat, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext-100k')
-cext_diag_dyn_mat = get_max_from_parallel_prof(parallel_cext_diag_dyn_mat)
-#for val in parallel_cext_total, parallel_cext_calc_dyn_matparallel_cext_cal
-# check stddev of these values?
+    materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext')
+cext_diag_dyn_mat = reduce_parallel_prof(parallel_cext_diag_dyn_mat)
+cext_colours = ['r', 'c', 'm', 'orange']
 for i, mat in enumerate(materials):
     fix, ax = plt.subplots(1)
-    ax.plot(nprocs, cext_calc_ph[i], label='total func time', color='k')
-    ax.plot(nprocs, cext_total[i], label='total time in C', color='b', ls='--')
-    ax.plot(nprocs, cext_calc_dyn_mat[i], label='calc dyn mat')
+    frac_dipole = cext_calc_dipole[i]/cext_calc_ph[i]
     if cext_calc_dipole[i, 0] > 0:
-        ax.plot(nprocs, cext_calc_dipole[i], label='calc dipole')
-    ax.plot(nprocs, cext_diag_dyn_mat[i], label='diag_dyn_mat')
-    ax.fill_between(nprocs, np.zeros(len(nprocs)), cext_total[i], alpha=0.2)
-#    ax.plot(nprocs, cext_total[i]/cext_calc_ph[i], label='total time in C')
-#    ax.plot(nprocs, cext_calc_dyn_mat[i]/cext_total[i], label='calc dyn mat')
-#    ax.plot(nprocs, cext_calc_dipole[i]/cext_total[i], label='calc dipole')
-#    ax.plot(nprocs, cext_diag_dyn_mat[i]/cext_total[i], label='diag_dyn_mat')
+        ax.plot(nprocs, frac_dipole, label='Dipole correction calculation', color=cext_colours[0])
+        ax.fill_between(nprocs, np.zeros(len(nprocs)), frac_dipole, color=cext_colours[0], alpha=0.4)
+    frac_calc_dyn = frac_dipole + cext_calc_dyn_mat[i]/cext_calc_ph[i]
+    ax.plot(nprocs, frac_calc_dyn, label='Dynamical matrix calculation', color=cext_colours[1])
+    ax.fill_between(nprocs, frac_dipole, frac_calc_dyn, color=cext_colours[1], alpha=0.4)
+    frac_diag_dyn = frac_calc_dyn + cext_diag_dyn_mat[i]/cext_calc_ph[i]
+    ax.plot(nprocs, frac_diag_dyn, label='Dynamical matrix diagonalisation', color=cext_colours[2])
+    ax.fill_between(nprocs, frac_calc_dyn, frac_diag_dyn, color=cext_colours[2], alpha=0.4)
+    frac_par = cext_par[i]/cext_calc_ph[i]
+    ax.plot(nprocs, frac_par, label='Remainder of parallel section', color=cext_colours[3])
+    ax.fill_between(nprocs, frac_diag_dyn, frac_par, color=cext_colours[3], alpha=0.4)
+
     ax.legend()
     ax.set_xlim(1, 24)
-    ax.set_ylim(0.)
+    ax.set_ylim(0, 1)
     ax.set_title(mat)
     ax.set_xlabel('Number of Processors')
-    ax.set_ylabel('Wall Time (s)')
-x = cext_calc_ph - cext_total
+    ax.set_ylabel('Fraction')
+
 plt.show()
 

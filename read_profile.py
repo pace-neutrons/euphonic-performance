@@ -168,6 +168,7 @@ def extract_cext_func_prof(data: List[str], func_name: str,
     Read profiling information for a particular function for
     custom C extension profiling data
     """
+    n_calls = None
     timing = None
     for line in data:
         if func_name in line:
