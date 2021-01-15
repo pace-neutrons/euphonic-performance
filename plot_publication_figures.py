@@ -86,24 +86,7 @@ print(f'{materials[0]} {avgt_castep[0][-1]}')
 print(f'{materials[1]} {avgt_castep[1][-1]}')
 print(f'{materials[2]} {avgt_castep[2][-1]}')
 
-# Plot Euphonic scaling
-_, avgt_calc_ph, maxt_calc_ph, mint_calc_ph = get_all_prof(
-        materials, nprocs=nprocs, direc='euphonic', file_type='timeit',
-        func_name='calculate_qpoint_phonon_modes')
-fig, ax = plt.subplots(1)
-for i in range(len(materials)):
-    ax.plot(nprocs, avgt_calc_ph[i,0]/avgt_calc_ph[i], color=colours[i],
-            label=material_labels[i])
-ax.plot([1,24], [1,24], color='k', ls='--', lw='1', label='Perfect scaling')
-ax.set_xlim(1, 24)
-ax.set_ylim(1, 24)
-ax.set_xlabel('Number of Processors')
-ax.set_ylabel('Speedup')
-ax.legend()
-plt.savefig('figures/euphonic_scaling.pdf')
-
-# Plot C extension profiling
-# Read data
+# Read timing + C extension profiling for 250k qpts
 def reduce_parallel_prof(parallel_times, op='mean'):
     reduced_time = np.zeros(parallel_times.shape)
     for i in range(len(parallel_times)):
@@ -113,22 +96,47 @@ def reduce_parallel_prof(parallel_times, op='mean'):
             elif op == 'max':
                 reduced_time[i, j] = np.amax(parallel_times[i, j])
     return reduced_time
-_, cext_calc_ph, maxt_calc_ph, mint_calc_ph = get_all_prof(
+_, cext_calc_ph, _, _ = get_all_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='timeit',
-        suffix='-cext', func_name='calculate_qpoint_phonon_modes')
+        suffix='-cext-250k', func_name='calculate_qpoint_phonon_modes')
 parallel_cext_par, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'total in parallel section', file_type='cext', suffix='-cext')
+    materials, nprocs, 'total in parallel section', file_type='cext', suffix='-cext-250k')
 cext_par = reduce_parallel_prof(parallel_cext_par)
 parallel_cext_calc_dyn_mat, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'calculate_dyn_mat_at_q', file_type='cext', suffix='-cext')
+    materials, nprocs, 'calculate_dyn_mat_at_q', file_type='cext', suffix='-cext-250k')
 cext_calc_dyn_mat = reduce_parallel_prof(parallel_cext_calc_dyn_mat)
 parallel_cext_calc_dipole, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'calculate_dipole_correction', file_type='cext', suffix='-cext')
+    materials, nprocs, 'calculate_dipole_correction', file_type='cext', suffix='-cext-250k')
 cext_calc_dipole = reduce_parallel_prof(parallel_cext_calc_dipole)
 parallel_cext_diag_dyn_mat, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext')
+    materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext-250k')
 cext_diag_dyn_mat = reduce_parallel_prof(parallel_cext_diag_dyn_mat)
-# Actually plot
+
+# Plot Euphonic walltimes for 250k
+fig, ax = plt.subplots(1)
+for i in range(len(materials)):
+    ax.plot(nprocs, cext_calc_ph[i], label=material_labels[i], color=colours[i])
+ax.set_xlim(1, 24)
+ax.set_yscale('log')
+ax.set_xlabel('Number of Processors')
+ax.set_ylabel('Wall Time (s)')
+ax.legend()
+plt.savefig('figures/euphonic_walltime_250k.pdf', bbox_inches='tight')
+
+# Plot Euphonic scaling for 250k
+fig, ax = plt.subplots(1)
+for i in range(len(materials)):
+    ax.plot(nprocs, cext_calc_ph[i,0]/cext_calc_ph[i], color=colours[i],
+            label=material_labels[i])
+ax.plot([1,24], [1,24], color='k', ls='--', lw='1', label='Perfect scaling')
+ax.set_xlim(1, 24)
+ax.set_ylim(1, 24)
+ax.set_xlabel('Number of Processors')
+ax.set_ylabel('Speedup')
+ax.legend()
+plt.savefig('figures/euphonic_scaling_250k.pdf')
+
+# Plot C extension profiling
 cext_colours = ['r', 'c', 'm', 'orange']
 fig, axes = plt.subplots(1,3, sharey=True, figsize=(12,4))
 for i, mat in enumerate(materials):
@@ -160,7 +168,7 @@ fig.text(0.5, 0.11, 'Number of Processors', ha='center')
 plt.savefig('figures/cext_prof.pdf')
 
 parallel_cext_for, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'total in for loop', file_type='cext', suffix='-cext')
+    materials, nprocs, 'total in for loop', file_type='cext', suffix='-cext-250k')
 cext_for = reduce_parallel_prof(parallel_cext_for)
 print(f'\n\nTime in parallel C for Nb, 24 procs: {cext_for[2, -1]}')
 
