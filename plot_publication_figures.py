@@ -7,7 +7,7 @@ import numpy as np
 from read_profile import get_all_prof, get_all_parallel_func_prof
 
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
-material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Nb']
+material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Niobium']
 nprocs = [1, 2, 4, 8, 12, 16, 24]
 
 # Print table comparing interpolation vs. sf times
@@ -53,8 +53,8 @@ _, avgt_eupy, maxt_eupy, mint_eupy = get_all_prof(
 fig, ax = plt.subplots(1)
 colours = ['r', 'g', 'b']
 for i in range(len(materials)):
-    ax.plot(nprocs, avgt_castep[i], label=material_labels[i] + ' CASTEP', ls='--', color=colours[i], lw=1)
-    ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i], lw=1)
+    ax.plot(nprocs, avgt_castep[i], label=material_labels[i] + ' CASTEP', ls='--', color=colours[i])
+    ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i])
     ax.scatter([1], avgt_eupy[i], label=material_labels[i] + ' Euphonic serial Python',
                color=colours[i], marker='x')
 ax.set_xlim(1, 24)
@@ -64,7 +64,7 @@ ax.set_ylabel('Wall Time (s)')
 handles, labels = ax.get_legend_handles_labels()
 labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
 lgd = ax.legend(handles, labels, loc='upper left', bbox_to_anchor=(1, 1.02))
-#plt.savefig('figures/walltime_compare.pdf', bbox_inches='tight')
+plt.savefig('figures/walltime_compare.pdf', bbox_inches='tight')
 
 # Print Euphonic script time for 1 procs for C/Python
 print(f'\nEuphonic script time for 1 proc in Python:')
@@ -94,14 +94,16 @@ fig, ax = plt.subplots(1)
 for i in range(len(materials)):
     ax.plot(nprocs, avgt_calc_ph[i,0]/avgt_calc_ph[i], color=colours[i],
             label=material_labels[i])
-ax.plot([1,24], [1,24], color='k', ls='--')
+ax.plot([1,24], [1,24], color='k', ls='--', lw='1', label='Perfect scaling')
 ax.set_xlim(1, 24)
-ax.set_ylim(1)
+ax.set_ylim(1, 24)
 ax.set_xlabel('Number of Processors')
 ax.set_ylabel('Speedup')
 ax.legend()
-#plt.savefig('figures/euphonic_scaling.pdf')
+plt.savefig('figures/euphonic_scaling.pdf')
 
+# Plot C extension profiling
+# Read data
 def reduce_parallel_prof(parallel_times, op='mean'):
     reduced_time = np.zeros(parallel_times.shape)
     for i in range(len(parallel_times)):
@@ -126,29 +128,41 @@ cext_calc_dipole = reduce_parallel_prof(parallel_cext_calc_dipole)
 parallel_cext_diag_dyn_mat, _ = get_all_parallel_func_prof(
     materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext')
 cext_diag_dyn_mat = reduce_parallel_prof(parallel_cext_diag_dyn_mat)
+# Actually plot
 cext_colours = ['r', 'c', 'm', 'orange']
+fig, axes = plt.subplots(1,3, sharey=True, figsize=(12,4))
 for i, mat in enumerate(materials):
-    fix, ax = plt.subplots(1)
     frac_dipole = cext_calc_dipole[i]/cext_calc_ph[i]
     if cext_calc_dipole[i, 0] > 0:
-        ax.plot(nprocs, frac_dipole, label='Dipole correction calculation', color=cext_colours[0])
-        ax.fill_between(nprocs, np.zeros(len(nprocs)), frac_dipole, color=cext_colours[0], alpha=0.4)
+        axes[i].plot(nprocs, frac_dipole, label='Ewald Sum Correction', color=cext_colours[0])
+        axes[i].fill_between(nprocs, np.zeros(len(nprocs)), frac_dipole, color=cext_colours[0], alpha=0.4)
     frac_calc_dyn = frac_dipole + cext_calc_dyn_mat[i]/cext_calc_ph[i]
-    ax.plot(nprocs, frac_calc_dyn, label='Dynamical matrix calculation', color=cext_colours[1])
-    ax.fill_between(nprocs, frac_dipole, frac_calc_dyn, color=cext_colours[1], alpha=0.4)
+    axes[i].plot(nprocs, frac_calc_dyn, label='Dynamical Matrix Calculation', color=cext_colours[1])
+    axes[i].fill_between(nprocs, frac_dipole, frac_calc_dyn, color=cext_colours[1], alpha=0.4)
     frac_diag_dyn = frac_calc_dyn + cext_diag_dyn_mat[i]/cext_calc_ph[i]
-    ax.plot(nprocs, frac_diag_dyn, label='Dynamical matrix diagonalisation', color=cext_colours[2])
-    ax.fill_between(nprocs, frac_calc_dyn, frac_diag_dyn, color=cext_colours[2], alpha=0.4)
+    axes[i].plot(nprocs, frac_diag_dyn, label='Dynamical Matrix Diagonalisation', color=cext_colours[2])
+    axes[i].fill_between(nprocs, frac_calc_dyn, frac_diag_dyn, color=cext_colours[2], alpha=0.4)
     frac_par = cext_par[i]/cext_calc_ph[i]
-    ax.plot(nprocs, frac_par, label='Remainder of parallel section', color=cext_colours[3])
-    ax.fill_between(nprocs, frac_diag_dyn, frac_par, color=cext_colours[3], alpha=0.4)
+    axes[i].plot(nprocs, frac_par, label='Remainder of Parallel Section', color=cext_colours[3])
+    axes[i].fill_between(nprocs, frac_diag_dyn, frac_par, color=cext_colours[3], alpha=0.4)
 
-    ax.legend()
-    ax.set_xlim(1, 24)
-    ax.set_ylim(0, 1)
-    ax.set_title(mat)
-    ax.set_xlabel('Number of Processors')
-    ax.set_ylabel('Fraction')
+    axes[i].set_xlim(1, 24)
+    axes[i].set_ylim(0, 1)
+    axes[i].set_title(material_labels[i])
+    box = axes[i].get_position()
+    axes[i].set_position([box.x0, box.y0 + box.height * 0.15,
+                          box.width, box.height * 0.85])
+axes[0].set_ylabel('Fraction of function time')
+handles, labels = axes[1].get_legend_handles_labels()
+# Put a legend below center axis
+axes[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.19), ncol=4)
+fig.text(0.5, 0.11, 'Number of Processors', ha='center')
+plt.savefig('figures/cext_prof.pdf')
+
+parallel_cext_for, _ = get_all_parallel_func_prof(
+    materials, nprocs, 'total in for loop', file_type='cext', suffix='-cext')
+cext_for = reduce_parallel_prof(parallel_cext_for)
+print(f'\n\nTime in parallel C for Nb, 24 procs: {cext_for[2, -1]}')
 
 plt.show()
 
