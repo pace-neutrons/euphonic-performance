@@ -1,0 +1,18 @@
+cpu-bind=MASK - cn848, task  0  0 [83150]: mask 0xffffffffffff set
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           cn848
+  Local device:         mlx4_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+
+real	13m38.932s
+user	12m54.082s
+sys	0m29.836s
+rm: cannot remove ‘quartz.bib’: No such file or directory
+rm: cannot remove ‘quartz.bands’: No such file or directory
+rm: cannot remove ‘quartz.cst_esp’: No such file or directory

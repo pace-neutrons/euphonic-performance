@@ -4,7 +4,7 @@
 #SBATCH --exclusive
 #SBATCH -N 1
 #SBATCH -n 24
-#SBATCH -t 50:00
+#SBATCH -t 10:00
 #SBATCH --job-name=castep_nb
 #SBATCH --array=1,2,4,8,12,16,24
 #SBATCH -v
@@ -12,7 +12,7 @@
 #SBATCH -e np%a-phonons/nb-castep-%a-%j.err
 
 lscpu
-cat run_phonons_benchmark.sbatch
+cat run_phonons_benchmark_noprof.sbatch
 
 sudo /usr/local/bin/enable_no_turbo.sh
 cp Nb-181818-s0.5-NCP19-vib-disp.{castep_bin,param,cell} np${SLURM_ARRAY_TASK_ID}-phonons

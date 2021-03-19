@@ -12,7 +12,7 @@
 #SBATCH -e np%a-phonons/quartz-castep-%a-%j.err
 
 lscpu
-cat run_phonons_benchmark.sbatch
+cat run_phonons_benchmark_noprof.sbatch
 
 sudo /usr/local/bin/enable_no_turbo.sh
 cp quartz.{castep_bin,param,cell} np${SLURM_ARRAY_TASK_ID}-phonons

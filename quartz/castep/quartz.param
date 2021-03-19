@@ -5,15 +5,16 @@ fix_occupancy       : true
 #cut_off_energy      : 880 eV
 elec_method         : dm
 mixing_scheme       : Pulay
-phonon_sum_rule     : true
-phonon_sum_rule_method : reciprocal
-born_charge_sumrule : true
-iprint              : 1
 backup_interval     : 1800
 run_time            : 43200
 continuation        : quartz.castep_bin
 phonon_calc_lo_to_splitting : false
 
+phonon_sum_rule     : false
+phonon_sum_rule_method : none
+born_charge_sumrule : false
+iprint              : 1
+
 %block devel_code
-PROF:*:ENDPROF
+PHONON:GROUP_THEORY=false SYMMETRIZE_DMAT=false:ENDPHONON
 %endblock devel_code

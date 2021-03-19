@@ -12,7 +12,7 @@
 #SBATCH -e np%a-phonons/lzo-castep-%a-%j.err
 
 lscpu
-cat run_phonons_benchmark.sbatch
+cat run_phonons_benchmark_noprof.sbatch
 
 sudo /usr/local/bin/enable_no_turbo.sh
 cp La2Zr2O7.{castep_bin,param,cell} np${SLURM_ARRAY_TASK_ID}-phonons

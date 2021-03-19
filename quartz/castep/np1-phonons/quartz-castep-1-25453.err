@@ -1,0 +1,19 @@
+cpu-bind=MASK - cn815, task  0  0 [228065]: mask 0xffffffffffff set
+cat: run_phonons_benchmark_noprof.sbatch: No such file or directory
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           cn815
+  Local device:         mlx4_0
+  Local port:           1
+  CPCs attempted:       rdmacm, udcm
+--------------------------------------------------------------------------
+
+real	13m35.839s
+user	12m58.911s
+sys	0m27.186s
+rm: cannot remove ‘quartz.bib’: No such file or directory
+rm: cannot remove ‘quartz.bands’: No such file or directory
+rm: cannot remove ‘quartz.cst_esp’: No such file or directory
