@@ -1,21 +1,21 @@
-cpu-bind=MASK - cn763, task  0  0 [214302]: mask 0xffffffffffff set
+cpu-bind=MASK - cn882, task  0  0 [36880]: mask 0xffffffffffff set
 cat: run_phonons_benchmark_noprof.sbatch: No such file or directory
 --------------------------------------------------------------------------
 No OpenFabrics connection schemes reported that they were able to be
 used on a specific port.  As such, the openib BTL (OpenFabrics
 support) will be disabled for this port.
 
-  Local host:           cn763
+  Local host:           cn882
   Local device:         mlx4_0
   Local port:           1
   CPCs attempted:       rdmacm, udcm
 --------------------------------------------------------------------------
-[cn763.scarf.rl.ac.uk:214322] 23 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
-[cn763.scarf.rl.ac.uk:214322] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[cn882.scarf.rl.ac.uk:36912] 23 more processes have sent help message help-mpi-btl-openib-cpc-base.txt / no cpcs for port
+[cn882.scarf.rl.ac.uk:36912] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
 
-real	4m45.926s
-user	111m38.788s
-sys	2m23.993s
+real	4m54.627s
+user	114m58.938s
+sys	2m25.153s
 rm: cannot remove ‘La2Zr2O7.bib’: No such file or directory
 rm: cannot remove ‘La_EXT_LDA_OTF.usp’: No such file or directory
 rm: cannot remove ‘Zr_EXT_LDA_OTF.usp’: No such file or directory
