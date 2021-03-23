@@ -4,7 +4,9 @@ mpl.rcParams['mathtext.fontset'] = 'dejavuserif'
 import matplotlib.pyplot as plt
 import numpy as np
 
-from read_profile import get_all_reduced_prof, get_all_parallel_func_prof, get_all_reduced_parallel_func_prof
+from read_profile import (get_all_prof, get_all_reduced_prof,
+                          get_all_parallel_func_prof,
+                          get_all_reduced_parallel_func_prof)
 
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Niobium']
@@ -21,10 +23,10 @@ def reduce_parallel_prof(parallel_times, op='mean'):
     return reduced_time
 
 # Print table comparing interpolation vs. sf times
-_, avg_interpolate, _, _ = get_all_reduced_prof(
+avg_interpolate, _, _, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
         suffix='-noc-sf', func_name='calculate_qpoint_phonon_modes')
-_, avg_sf, _, _ = get_all_reduced_prof(
+avg_sf, _, _, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
         suffix='-noc-sf', func_name='calculate_structure_factor')
 print(f'|{"Material":30}|{"Interpolation":13}|{"Structure Factor":16}|')
@@ -54,7 +56,7 @@ print(f'|{materials[2]:30}|{phonon_times[2][0]:10.4f}|{write_times[2]:10.4f}|')
 
 # Plot comparison figure of CASTEP/Euphonic interpolation times
 # Get CASTEP phonons tool time with profiling turned off
-_, avgt_castep, maxt_castep, mint_castep = get_all_reduced_prof(
+avgt_castep, maxt_castep, mint_castep, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='castep', file_type='time',
         suffix='-phonons')
 # Subtract time to calculate supercell (cell_supercell) and
@@ -65,9 +67,9 @@ import pdb; pdb.set_trace()
 avgt_castep -= (reduce_parallel_prof(all_avg_write_times)
                 + reduce_parallel_prof(all_avg_cell_supercell_times))
 # Now get Euphonic script times with/without C
-_, avgt_eu, maxt_eu, mint_eu = get_all_reduced_prof(
+avgt_eu, maxt_eu, mint_eu, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='time')
-_, avgt_eupy, maxt_eupy, mint_eupy = get_all_reduced_prof(
+avgt_eupy, maxt_eupy, mint_eupy, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='time', suffix='-noc')
 fig, ax = plt.subplots(1)
 colours = ['r', 'g', 'b']
@@ -106,7 +108,7 @@ print(f'{materials[1]} {avgt_castep[1][-1]}')
 print(f'{materials[2]} {avgt_castep[2][-1]}')
 
 # Read timing + C extension profiling for 250k qpts
-_, cext_calc_ph, _, _ = get_all_reduced_prof(
+cext_calc_ph, _, _, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='timeit',
         suffix='-cext-250k', func_name='calculate_qpoint_phonon_modes')
 parallel_cext_par, maxt, mint = get_all_reduced_parallel_func_prof(

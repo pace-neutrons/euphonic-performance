@@ -334,6 +334,60 @@ def get_all_reduced_parallel_func_prof(
             min_times[i][j] = min_times_ij
     return avg_times, max_times, min_times
 
+def get_all_prof(
+        materials: List[str], nprocs: List[int],
+        direc: Optional[str] = 'euphonic',
+        suffix: Optional[str] = '',
+        file_type: Optional[str] = 'cprofile',
+        func_name: Optional[str] = None,
+        printl: Optional[bool] = False
+        ) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
+    """
+    Same as get_all_reduced_prof, but doesn't reduce the
+    data for repeated runs, returns everything
+
+    Returns
+    -------
+    all_times
+    n_calls
+    """
+    times = np.empty((len(materials), len(nprocs)), dtype=object)
+    n_calls = np.empty((len(materials), len(nprocs)), dtype=object)
+    for i, mat in enumerate(materials):
+        for j, proc in enumerate(nprocs):
+            if file_type == 'cprofile':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*cprofile*txt')
+            elif file_type=='timeit':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*timeit*txt')
+            elif file_type=='time':
+                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*.err')
+            else:
+                raise ValueError(f'File type {file_type} not recognised')
+            times_ij = np.full(len(fnames), -1, dtype=np.float64)
+            n_calls_ij = np.full(len(fnames), -1, dtype=np.int32)
+            if len(fnames) == 0:
+                raise FileNotFoundError((
+                    f'{file_type} file not found in '
+                    f'{get_dir(mat, direc, proc, suffix)}'))
+            if file_type == 'time':
+                for k, fname in enumerate(fnames):
+                    times_ij[k] = get_real_time_from_file(fname)
+                    # n_calls doesn't make sense if not profiling a specific
+                    # function, so just set to 1
+                    n_calls_ij[k] = 1
+            else:
+                for k, fname in enumerate(fnames):
+                    times_ij[k], n_calls_ij[k] = get_func_prof_from_file(
+                        fname, func_name, file_type=file_type,
+                        ignore_missing=False, printl=printl)
+            if not np.all(n_calls_ij == n_calls_ij[0]):
+                 raise RuntimeError((f'For {mat}, processor {proc}, suffix ',
+                                     f'{suffix}, n_calls for {func_name} are ',
+                                     f'not equal: {n_calls_ij}'))
+            n_calls[i, j] = n_calls_ij
+            times[i, j] = times_ij
+    return times, n_calls
+
 def get_all_reduced_prof(
         materials: List[str], nprocs: List[int],
         direc: Optional[str] = 'euphonic',
@@ -370,48 +424,21 @@ def get_all_reduced_prof(
 
     Returns
     -------
-    n_calls
     avg_times
     max_times
     min_times
+    n_calls
     """
     avg_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     max_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     min_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     n_calls = np.full((len(materials), len(nprocs)), -1, dtype=np.int32)
+    all_times, all_calls = get_all_prof(
+        materials, nprocs, direc, suffix, file_type, func_name, printl)
     for i, mat in enumerate(materials):
         for j, proc in enumerate(nprocs):
-            if file_type == 'cprofile':
-                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*cprofile*txt')
-            elif file_type=='timeit':
-                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*timeit*txt')
-            elif file_type=='time':
-                fnames = glob.glob(get_dir(mat, direc, proc, suffix) + '/*.err')
-            else:
-                raise ValueError(f'File type {file_type} not recognised')
-            times = np.full(len(fnames), -1, dtype=np.float64)
-            n_calls_ij = np.full(len(fnames), -1, dtype=np.int32)
-            if len(fnames) == 0:
-                raise FileNotFoundError((
-                    f'{file_type} file not found in '
-                    f'{get_dir(mat, direc, proc, suffix)}'))
-            if file_type == 'time':
-                for k, fname in enumerate(fnames):
-                    times[k] = get_real_time_from_file(fname)
-                    # n_calls doesn't make sense if not profiling a specific
-                    # function, so just set to 1
-                    n_calls_ij[k] = 1
-            else:
-                for k, fname in enumerate(fnames):
-                    times[k], n_calls_ij[k] = get_func_prof_from_file(
-                        fname, func_name, file_type=file_type,
-                        ignore_missing=False, printl=printl)
-            if not np.all(n_calls_ij == n_calls_ij[0]):
-                 raise RuntimeError((f'For {mat}, processor {proc}, suffix ',
-                                     f'{suffix}, n_calls for {func_name} are ',
-                                     f'not equal: {n_calls_ij}'))
-            n_calls[i, j] = n_calls_ij[0]
-            avg_times[i, j] = np.mean(times)
-            max_times[i, j] = np.amax(times)
-            min_times[i, j] = np.amin(times)
-    return n_calls, avg_times, max_times, min_times
+            n_calls[i, j] = all_calls[i, j][0]
+            avg_times[i, j] = np.mean(all_times[i, j])
+            max_times[i, j] = np.amax(all_times[i, j])
+            min_times[i, j] = np.amin(all_times[i, j])
+    return avg_times, max_times, min_times, n_calls
