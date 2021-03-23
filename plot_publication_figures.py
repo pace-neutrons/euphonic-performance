@@ -4,17 +4,27 @@ mpl.rcParams['mathtext.fontset'] = 'dejavuserif'
 import matplotlib.pyplot as plt
 import numpy as np
 
-from read_profile import get_all_prof, get_all_parallel_func_prof
+from read_profile import get_all_reduced_prof, get_all_parallel_func_prof, get_all_reduced_parallel_func_prof
 
 materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
 material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Niobium']
 nprocs = [1, 2, 4, 8, 12, 16, 24]
 
+def reduce_parallel_prof(parallel_times, op='mean'):
+    reduced_time = np.zeros(parallel_times.shape)
+    for i in range(len(parallel_times)):
+        for j in range(len(parallel_times[0])):
+            if op == 'mean':
+                reduced_time[i, j] = np.mean(parallel_times[i, j])
+            elif op == 'max':
+                reduced_time[i, j] = np.amax(parallel_times[i, j])
+    return reduced_time
+
 # Print table comparing interpolation vs. sf times
-_, avg_interpolate, _, _ = get_all_prof(
+_, avg_interpolate, _, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
         suffix='-noc-sf', func_name='calculate_qpoint_phonon_modes')
-_, avg_sf, _, _ = get_all_prof(
+_, avg_sf, _, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='timeit',
         suffix='-noc-sf', func_name='calculate_structure_factor')
 print(f'|{"Material":30}|{"Interpolation":13}|{"Structure Factor":16}|')
@@ -24,17 +34,17 @@ print(f'|{materials[2]:30}|{avg_interpolate[2][0]:13.4f}|{avg_sf[2][0]:16.4f}|')
 
 
 # Print table comparing total serial CASTEP phonons time vs. write times
-all_write_times, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'phonon_write')
-all_phonon_times, _ = get_all_parallel_func_prof(
-    materials, nprocs, 'phonon_calculate')
+all_avg_write_times, _, _ = get_all_reduced_parallel_func_prof(
+    materials, nprocs, 'phonon_write', suffix='-phonons-prof')
+all_avg_phonon_times, _, _ = get_all_reduced_parallel_func_prof(
+    materials, nprocs, 'phonon_calculate', suffix='-phonons-prof')
 write_times = np.zeros(len(materials))
 phonon_times = np.zeros((len(materials), len(nprocs)))
 for i in range(len(materials)):
     tmp_write_times = np.zeros(len(nprocs))
     for j in range(len(nprocs)):
-        tmp_write_times[j] = all_write_times[i][j][0]
-        phonon_times[i][j] = np.mean(all_phonon_times[i][j])
+        tmp_write_times[j] = all_avg_write_times[i][j][0]
+        phonon_times[i][j] = np.mean(all_avg_phonon_times[i][j])
     write_times[i] = np.mean(tmp_write_times)
 print(f'\n|{"Material":30}|{"Total Time":10}|{"Write Time":10}|')
 print(f'|{materials[0]:30}|{phonon_times[0][0]:10.4f}|{write_times[0]:10.4f}|')
@@ -43,12 +53,21 @@ print(f'|{materials[2]:30}|{phonon_times[2][0]:10.4f}|{write_times[2]:10.4f}|')
 
 
 # Plot comparison figure of CASTEP/Euphonic interpolation times
-_, avgt_castep, maxt_castep, mint_castep = get_all_prof(
+# Get CASTEP phonons tool time with profiling turned off
+_, avgt_castep, maxt_castep, mint_castep = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='castep', file_type='time',
-        suffix='-noprof')
-_, avgt_eu, maxt_eu, mint_eu = get_all_prof(
+        suffix='-phonons')
+# Subtract time to calculate supercell (cell_supercell) and
+# to write to .phonon (phonon_write)
+all_avg_cell_supercell_times, _, _ = get_all_reduced_parallel_func_prof(
+    materials, nprocs, 'cell_supercell', suffix='-phonons-prof')
+import pdb; pdb.set_trace()
+avgt_castep -= (reduce_parallel_prof(all_avg_write_times)
+                + reduce_parallel_prof(all_avg_cell_supercell_times))
+# Now get Euphonic script times with/without C
+_, avgt_eu, maxt_eu, mint_eu = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='time')
-_, avgt_eupy, maxt_eupy, mint_eupy = get_all_prof(
+_, avgt_eupy, maxt_eupy, mint_eupy = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='time', suffix='-noc')
 fig, ax = plt.subplots(1)
 colours = ['r', 'g', 'b']
@@ -87,28 +106,19 @@ print(f'{materials[1]} {avgt_castep[1][-1]}')
 print(f'{materials[2]} {avgt_castep[2][-1]}')
 
 # Read timing + C extension profiling for 250k qpts
-def reduce_parallel_prof(parallel_times, op='mean'):
-    reduced_time = np.zeros(parallel_times.shape)
-    for i in range(len(parallel_times)):
-        for j in range(len(parallel_times[0])):
-            if op == 'mean':
-                reduced_time[i, j] = np.mean(parallel_times[i, j])
-            elif op == 'max':
-                reduced_time[i, j] = np.amax(parallel_times[i, j])
-    return reduced_time
-_, cext_calc_ph, _, _ = get_all_prof(
+_, cext_calc_ph, _, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='timeit',
         suffix='-cext-250k', func_name='calculate_qpoint_phonon_modes')
-parallel_cext_par, _ = get_all_parallel_func_prof(
+parallel_cext_par, maxt, mint = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'total in parallel section', file_type='cext', suffix='-cext-250k')
 cext_par = reduce_parallel_prof(parallel_cext_par)
-parallel_cext_calc_dyn_mat, _ = get_all_parallel_func_prof(
+parallel_cext_calc_dyn_mat, maxt, mint = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'calculate_dyn_mat_at_q', file_type='cext', suffix='-cext-250k')
 cext_calc_dyn_mat = reduce_parallel_prof(parallel_cext_calc_dyn_mat)
-parallel_cext_calc_dipole, _ = get_all_parallel_func_prof(
+parallel_cext_calc_dipole, maxt, mint = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'calculate_dipole_correction', file_type='cext', suffix='-cext-250k')
 cext_calc_dipole = reduce_parallel_prof(parallel_cext_calc_dipole)
-parallel_cext_diag_dyn_mat, _ = get_all_parallel_func_prof(
+parallel_cext_diag_dyn_mat, maxt, mint = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'diagonalise_dyn_mat', file_type='cext', suffix='-cext-250k')
 cext_diag_dyn_mat = reduce_parallel_prof(parallel_cext_diag_dyn_mat)
 
@@ -167,7 +177,7 @@ axes[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.19), ncol=4)
 fig.text(0.5, 0.11, 'Number of Processors', ha='center')
 plt.savefig('figures/cext_prof.pdf')
 
-parallel_cext_for, _ = get_all_parallel_func_prof(
+parallel_cext_for, maxt, mint = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'total in for loop', file_type='cext', suffix='-cext-250k')
 cext_for = reduce_parallel_prof(parallel_cext_for)
 print(f'\n\nTime in parallel C for Nb, 24 procs: {cext_for[2, -1]}')

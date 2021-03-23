@@ -16,18 +16,37 @@ def get_dir(material: str, code: str, nproc: int,
     return direc
 
 
+def get_cext_fname(proc_num: int) -> str:
+    """Get name of custom Euphonic C extension .profile file"""
+    return f'euphonic_c_ext.{proc_num - 1:02d}.profile'
+
+
 def get_castep_fname(material: str, proc_num: int) -> str:
     """Get name of CASTEP .profile file"""
     return f'{material}.{proc_num:04d}.profile'
 
 
-def get_castep_fnames(material: str, nproc: int) -> List[str]:
-    """Get path and name of all CASTEP .profile files in directory"""
-    path = get_dir(material, 'castep', nproc)
+def get_prof_fnames(material: str, nproc: int, suffix: Optional[str] = '',
+                    file_type: str = 'castep') -> List[str]:
+    """
+    Get path and name of all profile files in directory. file_type is
+    one of {'castep', 'cext'}
+    """
+    if file_type == 'castep':
+        direc = 'castep'
+    elif file_type == 'cext':
+        direc = 'euphonic'
+    else:
+        raise ValueError(f'File type {file_type} not recognised')
+    path = get_dir(material, direc, nproc, suffix)
     fnames = []
     for p in range(1, nproc + 1):
+        if file_type == 'castep':
+            fname = get_castep_fname(material, p)
+        else:
+            fname = get_cext_fname(p)
         fnames.append(
-            os.path.join(path, get_castep_fname(material, p)))
+            os.path.join(path, fname))
     return fnames
 
 
@@ -196,24 +215,26 @@ def get_parallel_func_prof(
     some functions are only run on the 1st processor) return a masked
     array
     """
-    if file_type == 'castep':
-        fnames = get_castep_fnames(material, nproc)
-    elif file_type == 'cext':
-        fnames = glob.glob(get_dir(
-            material, 'euphonic', nproc, suffix) + '/*.profile')
-    else:
-        raise ValueError(f'File type {file_type} not recognised')
-    times = np.full(len(fnames), -1, dtype=np.float64)
-    n_calls = np.full(len(fnames), -1, dtype=np.int32)
+    fnames = get_prof_fnames(material, nproc, suffix, file_type)
+    times = np.full(len(fnames), -1, dtype=object)
+    n_calls = np.full(len(fnames), -1, dtype=object)
     for i, fname in enumerate(fnames):
-        times_i, n_calls_i = get_func_prof_from_file(
-            fname, function_name, file_type=file_type,
-            ignore_missing=ignore_missing)
-        if times_i is None:
-            if not isinstance(times_i, np.ma.MaskedArray):
-                times = np.ma.array(times)
-                n_calls = np.ma.array(n_calls)
-            times_i, n_calls_i = (np.ma.masked, np.ma.masked)
+        # If there are repeat runs, the filename should have a
+        # batch job number appended
+        fname_repeats = glob.glob(fname + '*')
+        times_i = np.full(len(fname_repeats), -1, dtype=np.float64)
+        n_calls_i = np.full(len(fname_repeats), -1, dtype=np.int32)
+        for j, fname_repeat in enumerate(fname_repeats):
+            times_ij, n_calls_ij = get_func_prof_from_file(
+                fname_repeat, function_name, file_type=file_type,
+                ignore_missing=ignore_missing)
+            if times_ij is None:
+                if not isinstance(times_i, np.ma.MaskedArray):
+                    times_i = np.ma.array(times_i)
+                    n_calls_i = np.ma.array(n_calls_i)
+                times_ij, n_calls_ij = (np.ma.masked, np.ma.masked)
+            times_i[j] = times_ij
+            n_calls_i[j] = n_calls_ij
         times[i] = times_i
         n_calls[i] = n_calls_i
     return times, n_calls
@@ -227,9 +248,13 @@ def get_all_parallel_func_prof(
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
     """
-    Read parallel profiling information for a particular function from all
-    profiling files in all material/nprocs directories, where there is one
-    file produced per thread
+    Same as get_all_reduced_parallel_func_prof, but doesn't reduce the
+    data for repeated runs, returns everything
+
+    Returns
+    -------
+    all_times
+    n_calls
     """
     times = np.empty((len(materials), len(nprocs)), dtype=object)
     n_calls = np.empty((len(materials), len(nprocs)), dtype=object)
@@ -239,8 +264,77 @@ def get_all_parallel_func_prof(
                 mat, proc, function_name, file_type=file_type, suffix=suffix)
     return times, n_calls
 
+def get_all_reduced_parallel_func_prof(
+        materials: List[str], nprocs: List[int], function_name: str,
+        suffix: Optional[str] = '',
+        file_type: Optional[str] = 'castep',
+        ignore_missing: Optional[bool] = True
+        ) -> Union[Tuple[ndarray, ndarray],
+                   Tuple[MaskedArray, MaskedArray]]:
+    """
+    Read parallel profiling information for a particular function from all
+    profiling files in all material/nprocs directories, where there is one
+    file produced per thread, and the reduce to the mean/max/min of repeated
+    runs
 
-def get_all_prof(
+    Parameters
+    ----------
+    materials
+        Materials directories to look in
+    nprocs
+        Processor directories to look in
+    direc
+        Subdirectory to look in. Usually the modelling code name
+    suffix
+        Add this suffix onto the processor directories e.g. if they are named
+        np1-phonons, np2-phonons etc. this should be '-phonons'
+    file_type
+        The type of file to be read, one of {'castep', 'cext'}.
+        'castep' is for files produced using CASTEP's built-in profiling,
+        'cext' is for files produced using Euphonic's custom C extension
+        profiling (see profile_c_ext branch)
+   func_name
+        The profiled function to read information for. Required if file_type
+        is 'cprofile' or 'timeit'. Does nothing for 'time'.
+    printl
+        Whether to print debugging information
+
+    Returns
+    -------
+    avg_times
+    max_times
+    min_times
+    """
+    all_times, all_calls = get_all_parallel_func_prof(
+        materials, nprocs, function_name, suffix, file_type, ignore_missing)
+    avg_times = np.empty((len(materials), len(nprocs)), dtype=object)
+    max_times = np.empty((len(materials), len(nprocs)), dtype=object)
+    min_times = np.empty((len(materials), len(nprocs)), dtype=object)
+    for i, mat in enumerate(materials):
+        for j, proc in enumerate(nprocs):
+            avg_times_ij = np.full(proc, -1, dtype=np.float64)
+            max_times_ij = np.full(proc, -1, dtype=np.float64)
+            min_times_ij = np.full(proc, -1, dtype=np.float64)
+            for ip in range(proc):
+                check = np.mean(all_times[i, j][ip])
+                if check == 0 or check:
+                    avg_times_ij[ip] = np.mean(all_times[i, j][ip])
+                    max_times_ij[ip] = np.max(all_times[i, j][ip])
+                    min_times_ij[ip] = np.min(all_times[i, j][ip])
+                else:
+                    if not isinstance(avg_times_ij, np.ma.MaskedArray):
+                        avg_times_ij = np.ma.array(avg_times_ij)
+                        max_times_ij = np.ma.array(max_times_ij)
+                        min_times_ij = np.ma.array(min_times_ij)
+                    avg_times_ij[ip] = np.ma.masked
+                    max_times_ij[ip] = np.ma.masked
+                    min_times_ij[ip] = np.ma.masked
+            avg_times[i][j] = avg_times_ij
+            max_times[i][j] = max_times_ij
+            min_times[i][j] = min_times_ij
+    return avg_times, max_times, min_times
+
+def get_all_reduced_prof(
         materials: List[str], nprocs: List[int],
         direc: Optional[str] = 'euphonic',
         suffix: Optional[str] = '',
@@ -250,7 +344,8 @@ def get_all_prof(
         ) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
     """
     Read profiling information where there is 1 output file per profiling run
-    from all materials/nprocessor directories
+    from all materials/nprocessor directories, and get the mean/min/max of
+    repeated runs
 
     Parameters
     ----------
@@ -272,6 +367,13 @@ def get_all_prof(
         is 'cprofile' or 'timeit'. Does nothing for 'time'.
     printl
         Whether to print debugging information
+
+    Returns
+    -------
+    n_calls
+    avg_times
+    max_times
+    min_times
     """
     avg_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
     max_times = np.full((len(materials), len(nprocs)), -1, dtype=np.float64)
