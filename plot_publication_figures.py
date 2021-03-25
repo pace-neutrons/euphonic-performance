@@ -13,6 +13,8 @@ material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Niobium']
 nprocs = [1, 2, 4, 8, 12, 16, 24]
 
 def reduce_parallel_prof(parallel_times, op='mean'):
+    # Parallel profiling results are reported once per thread.
+    # Reduce this to the mean value per run
     reduced_time = np.zeros(parallel_times.shape)
     for i in range(len(parallel_times)):
         for j in range(len(parallel_times[0])):
@@ -38,34 +40,36 @@ print(f'|{materials[2]:30}|{avg_interpolate[2][0]:13.4f}|{avg_sf[2][0]:16.4f}|')
 # Print table comparing total serial CASTEP phonons time vs. write times
 all_avg_write_times, _, _ = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'phonon_write', suffix='-phonons-prof')
+write_times = reduce_parallel_prof(all_avg_write_times)
 all_avg_phonon_times, _, _ = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'phonon_calculate', suffix='-phonons-prof')
-write_times = np.zeros(len(materials))
-phonon_times = np.zeros((len(materials), len(nprocs)))
-for i in range(len(materials)):
-    tmp_write_times = np.zeros(len(nprocs))
-    for j in range(len(nprocs)):
-        tmp_write_times[j] = all_avg_write_times[i][j][0]
-        phonon_times[i][j] = np.mean(all_avg_phonon_times[i][j])
-    write_times[i] = np.mean(tmp_write_times)
+phonon_times = reduce_parallel_prof(all_avg_phonon_times)
 print(f'\n|{"Material":30}|{"Total Time":10}|{"Write Time":10}|')
-print(f'|{materials[0]:30}|{phonon_times[0][0]:10.4f}|{write_times[0]:10.4f}|')
-print(f'|{materials[1]:30}|{phonon_times[1][0]:10.4f}|{write_times[1]:10.4f}|')
-print(f'|{materials[2]:30}|{phonon_times[2][0]:10.4f}|{write_times[2]:10.4f}|')
+print(f'|{materials[0]:30}|{phonon_times[0, 0]:10.4f}|{write_times[0, 0]:10.4f}|')
+print(f'|{materials[1]:30}|{phonon_times[1, 0]:10.4f}|{write_times[1, 0]:10.4f}|')
+print(f'|{materials[2]:30}|{phonon_times[2, 0]:10.4f}|{write_times[2, 0]:10.4f}|')
 
 
 # Plot comparison figure of CASTEP/Euphonic interpolation times
-# Get CASTEP phonons tool time with profiling turned off
-avgt_castep, maxt_castep, mint_castep, _ = get_all_reduced_prof(
+# Different options for 'total' CASTEP calculation time, phonons tool
+# time with profiling on/off, or phonon_calculate time in profiling output
+avgt_castep_noprof, maxt_castep, mint_castep, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='castep', file_type='time',
         suffix='-phonons')
-# Subtract time to calculate supercell (cell_supercell) and
-# to write to .phonon (phonon_write)
-all_avg_cell_supercell_times, _, _ = get_all_reduced_parallel_func_prof(
+avgt_castep_prof, _, _, _ = get_all_reduced_prof(
+        materials, nprocs=nprocs, direc='castep', file_type='time',
+        suffix='-phonons-prof')
+avgt_phonon_calc, _, _ = get_all_reduced_parallel_func_prof(
+    materials, nprocs, 'phonon_calculate', suffix='-phonons-prof')
+avgt_phonon_calc_r = reduce_parallel_prof(avgt_phonon_calc)
+# Get time to calculate supercell (cell_supercell)
+avgt_cell_supercell, _, _ = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'cell_supercell', suffix='-phonons-prof')
-import pdb; pdb.set_trace()
-avgt_castep -= (reduce_parallel_prof(all_avg_write_times)
-                + reduce_parallel_prof(all_avg_cell_supercell_times))
+avgt_cell_supercell_r = reduce_parallel_prof(avgt_cell_supercell)
+# Subtract cell_supercell and phonon_write time from total CASTEP time
+avgt_castep = (avgt_phonon_calc_r
+               - write_times
+               - avgt_cell_supercell_r)
 # Now get Euphonic script times with/without C
 avgt_eu, maxt_eu, mint_eu, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='time')
