@@ -18,10 +18,13 @@ def reduce_parallel_prof(parallel_times, op='mean'):
     reduced_time = np.zeros(parallel_times.shape)
     for i in range(len(parallel_times)):
         for j in range(len(parallel_times[0])):
-            if op == 'mean':
-                reduced_time[i, j] = np.mean(parallel_times[i, j])
+            times_ij = parallel_times[i, j]
+            if np.ma.is_masked(times_ij) and times_ij.mask.all():
+                continue
+            elif op == 'mean':
+                reduced_time[i, j] = np.mean(times_ij)
             elif op == 'max':
-                reduced_time[i, j] = np.amax(parallel_times[i, j])
+                reduced_time[i, j] = np.amax(times_ij)
     return reduced_time
 
 # Print table comparing interpolation vs. sf times
@@ -62,14 +65,19 @@ avgt_castep_prof, _, _, _ = get_all_reduced_prof(
 avgt_phonon_calc, _, _ = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'phonon_calculate', suffix='-phonons-prof')
 avgt_phonon_calc_r = reduce_parallel_prof(avgt_phonon_calc)
+# Get time to reconstruct fc mat (recip_to_real)
+avgt_recip_to_real, _, _ = get_all_reduced_parallel_func_prof(
+    materials, nprocs, 'phonon_recip_to_real', suffix='-phonons-prof')
+avgt_recip_to_real_r = reduce_parallel_prof(avgt_recip_to_real)
 # Get time to calculate supercell (cell_supercell)
 avgt_cell_supercell, _, _ = get_all_reduced_parallel_func_prof(
     materials, nprocs, 'cell_supercell', suffix='-phonons-prof')
 avgt_cell_supercell_r = reduce_parallel_prof(avgt_cell_supercell)
 # Subtract cell_supercell and phonon_write time from total CASTEP time
-avgt_castep = (avgt_phonon_calc_r
+avgt_castep = (avgt_castep_noprof
                - write_times
-               - avgt_cell_supercell_r)
+               - avgt_cell_supercell_r
+               - avgt_recip_to_real_r)
 # Now get Euphonic script times with/without C
 avgt_eu, maxt_eu, mint_eu, _ = get_all_reduced_prof(
         materials, nprocs=nprocs, direc='euphonic', file_type='time')
