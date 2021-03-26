@@ -8,8 +8,8 @@ from read_profile import (get_all_prof, get_all_reduced_prof,
                           get_all_parallel_func_prof,
                           get_all_reduced_parallel_func_prof)
 
-materials = ['La2Zr2O7', 'quartz', 'Nb-181818-s0.5-NCP19-vib-disp']
-material_labels = ['$\mathrm{La_2Zr_2O_7}$', 'Quartz', 'Niobium']
+materials = ['Nb-181818-s0.5-NCP19-vib-disp', 'quartz', 'La2Zr2O7']
+material_labels = ['Niobium', 'Quartz', '$\mathrm{La_2Zr_2O_7}$']
 nprocs = [1, 2, 4, 8, 12, 16, 24]
 
 def reduce_parallel_prof(parallel_times, op='mean'):
@@ -95,7 +95,8 @@ ax.set_yscale('log')
 ax.set_xlabel('Number of Processors')
 ax.set_ylabel('Wall Time (s)')
 handles, labels = ax.get_legend_handles_labels()
-labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+# Put legend labels in order 'Nb, Quartz, lzo'
+labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: 'NQ$'.index(t[0][0])))
 lgd = ax.legend(handles, labels, loc='upper left', bbox_to_anchor=(1, 1.02))
 plt.savefig('figures/walltime_compare.pdf', bbox_inches='tight')
 
