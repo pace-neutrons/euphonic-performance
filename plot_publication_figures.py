@@ -84,7 +84,7 @@ avgt_eu, maxt_eu, mint_eu, _ = get_all_reduced_prof(
 avgt_eupy, maxt_eupy, mint_eupy, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic', file_type='time', suffix='-noc')
 fig, ax = plt.subplots(1)
-colours = ['r', 'g', 'b']
+colours = ['tab:cyan', 'orange', 'm']
 for i in range(len(materials)):
     ax.plot(nprocs, avgt_castep[i], label=material_labels[i] + ' CASTEP', ls='--', color=colours[i])
     ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i])
