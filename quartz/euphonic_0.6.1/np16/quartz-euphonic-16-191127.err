@@ -1,0 +1,5 @@
+cpu-bind=MASK - cn877, task  0  0 [23848]: mask 0xffffffffffff set
+
+real	0m6.875s
+user	0m55.539s
+sys	0m0.478s
