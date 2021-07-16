@@ -7,7 +7,7 @@
 #SBATCH -c 1
 #SBATCH -t 30:00
 #SBATCH --job-name=euphonic_quartz
-#SBATCH --array=1,2,4,8,12,16,24
+#SBATCH --array=1,2,4,8,12,16,24,48
 #SBATCH -v
 #SBATCH -o np%a-cext-250k/quartz-euphonic-%a-%j.out
 #SBATCH -e np%a-cext-250k/quartz-euphonic-%a-%j.err

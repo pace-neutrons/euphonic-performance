@@ -21,8 +21,7 @@ def end_timer(profile_data, funcstr, start_time):
 interpolate_kwargs = {'use_c': False}
 if len(sys.argv) > 1 and int(sys.argv[1]) > 0:
     interpolate_kwargs = {'use_c': True,
-                          'n_threads': int(sys.argv[1]),
-                          'fall_back_on_python': False}
+                          'n_threads': int(sys.argv[1])}
 
 if len(sys.argv) > 2:
     profile = True
