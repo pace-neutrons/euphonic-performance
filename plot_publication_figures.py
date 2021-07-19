@@ -75,25 +75,37 @@ avgt_recip_to_real_r = reduce_parallel_prof(avgt_recip_to_real)
 avgt_cell_supercell, _, _ = get_all_reduced_parallel_func_prof(
     castep_materials, nprocs, 'cell_supercell', suffix='-phonons-prof')
 avgt_cell_supercell_r = reduce_parallel_prof(avgt_cell_supercell)
-# Subtract cell_supercell and phonon_write time from total CASTEP time
-avgt_castep = (avgt_castep_noprof
+
+# Subtract cell_supercell and phonon_write time from phonon_calculate time
+avgt_castep = (avgt_phonon_calc_r
                - write_times
                - avgt_cell_supercell_r
                - avgt_recip_to_real_r)
 
-# Now get Euphonic script times with/without C
-avgt_eu, maxt_eu, mint_eu, _ = get_all_reduced_prof(
-        materials, nprocs=nprocs, direc='euphonic_0.6.1', file_type='time')
-avgt_eupy, maxt_eupy, mint_eupy, _ = get_all_reduced_prof(
-        materials, nprocs=[1], direc='euphonic_0.6.1', file_type='time', suffix='-noc')
+# Now get Euphonic interpolation times with/without C
+avgt_eupy, _, _, _ = get_all_reduced_prof(
+        materials, [1], direc='euphonic_0.6.1', file_type='timeit',
+        suffix='-noc', func_name='calculate_qpoint_phonon_modes')
+avgt_eu, _, _, _ = get_all_reduced_prof(
+        materials, nprocs, direc='euphonic_0.6.1', file_type='timeit',
+        func_name='calculate_qpoint_phonon_modes')
+
+# Get Phonopy interpolation times
+avgt_phonopy, _, _, _ = get_all_reduced_prof(
+        phonopy_materials, nprocs=[1], direc='phonopy', file_type='timeit',
+        func_name='run_qpoints')
+
 fig, ax = plt.subplots(1)
 colours = ['tab:cyan', 'orange', 'm', 'darkgreen']
 for i in range(len(castep_materials)):
     ax.plot(nprocs, avgt_castep[i], label=castep_material_labels[i] + ' CASTEP', ls='--', color=colours[i])
+for i in range(len(phonopy_materials)):
+    ax.scatter([1], avgt_phonopy[i], label=phonopy_material_labels[i] + ' Phonopy',
+               color=colours[len(castep_materials) + i], marker='P', clip_on=False)
 for i in range(len(materials)):
     ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i])
     ax.scatter([1], avgt_eupy[i], label=material_labels[i] + ' Euphonic serial Python',
-               color=colours[i], marker='x')
+               color=colours[i], marker='x', clip_on=False)
 ax.set_xlim(1, 24)
 ax.set_yscale('log')
 ax.set_xlabel('Number of Processors')
