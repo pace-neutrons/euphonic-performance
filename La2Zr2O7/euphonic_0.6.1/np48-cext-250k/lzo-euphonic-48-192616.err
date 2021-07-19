@@ -1,0 +1,6 @@
+cpu-bind=MASK - cn830, task  0  0 [210188]: mask 0xffffffffffff set
+/var/spool/slurmd/job192616/slurm_script: line 30: 210224 Segmentation fault      (core dumped) python run_euphonic_250k.py ${SLURM_ARRAY_TASK_ID} lzo_np${SLURM_ARRAY_TASK_ID}_${SLURM_JOB_ID}_timeit.txt
+
+real	0m37.179s
+user	1m41.771s
+sys	0m6.562s
