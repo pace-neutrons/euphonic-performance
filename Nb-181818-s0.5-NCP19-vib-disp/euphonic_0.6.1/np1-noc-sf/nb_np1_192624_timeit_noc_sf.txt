@@ -1,0 +1,4 @@
+euphonic from_castep  0.121
+euphonic calculate_qpoint_phonon_modes  7.207
+euphonic calculate_structure_factor  0.104
+euphonic calculate_sqw_map  13.070
