@@ -27,24 +27,21 @@ def get_castep_fname(material: str, proc_num: int) -> str:
 
 
 def get_prof_fnames(material: str, nproc: int, suffix: Optional[str] = '',
-                    file_type: str = 'castep') -> List[str]:
+                    file_type: Optional[str] = 'castep',
+                    direc: Optional[str] = 'castep') -> List[str]:
     """
     Get path and name of all profile files in directory. file_type is
     one of {'castep', 'cext'}
     """
-    if file_type == 'castep':
-        direc = 'castep'
-    elif file_type == 'cext':
-        direc = 'euphonic'
-    else:
-        raise ValueError(f'File type {file_type} not recognised')
     path = get_dir(material, direc, nproc, suffix)
     fnames = []
     for p in range(1, nproc + 1):
         if file_type == 'castep':
             fname = get_castep_fname(material, p)
-        else:
+        elif file_type == 'cext':
             fname = get_cext_fname(p)
+        else:
+            raise ValueError(f'File type {file_type} not recognised')
         fnames.append(
             os.path.join(path, fname))
     return fnames
@@ -203,6 +200,7 @@ def extract_cext_func_prof(data: List[str], func_name: str,
 def get_parallel_func_prof(
         material: str, nproc: int, function_name: str,
         file_type: Optional[str] = 'castep',
+        direc: Optional[str] = 'castep',
         suffix: Optional[str] = '',
         ignore_missing: Optional[bool] = True,
         printl: Optional[bool] = False
@@ -215,7 +213,8 @@ def get_parallel_func_prof(
     some functions are only run on the 1st processor) return a masked
     array
     """
-    fnames = get_prof_fnames(material, nproc, suffix, file_type)
+    fnames = get_prof_fnames(material, nproc, suffix=suffix, file_type=file_type,
+                             direc=direc)
     times = np.full(len(fnames), -1, dtype=object)
     n_calls = np.full(len(fnames), -1, dtype=object)
     for i, fname in enumerate(fnames):
@@ -244,6 +243,7 @@ def get_all_parallel_func_prof(
         materials: List[str], nprocs: List[int], function_name: str,
         suffix: Optional[str] = '',
         file_type: Optional[str] = 'castep',
+        direc: Optional[str] = 'castep',
         ignore_missing: Optional[bool] = True
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
@@ -261,13 +261,15 @@ def get_all_parallel_func_prof(
     for i, mat in enumerate(materials):
         for j, proc in enumerate(nprocs):
             (times[i, j], n_calls[i, j]) = get_parallel_func_prof(
-                mat, proc, function_name, file_type=file_type, suffix=suffix)
+                mat, proc, function_name, file_type=file_type,
+                direc=direc, suffix=suffix)
     return times, n_calls
 
 def get_all_reduced_parallel_func_prof(
         materials: List[str], nprocs: List[int], function_name: str,
         suffix: Optional[str] = '',
         file_type: Optional[str] = 'castep',
+        direc: Optional[str] = 'castep',
         ignore_missing: Optional[bool] = True
         ) -> Union[Tuple[ndarray, ndarray],
                    Tuple[MaskedArray, MaskedArray]]:
@@ -306,7 +308,8 @@ def get_all_reduced_parallel_func_prof(
     min_times
     """
     all_times, all_calls = get_all_parallel_func_prof(
-        materials, nprocs, function_name, suffix, file_type, ignore_missing)
+        materials, nprocs, function_name, suffix, file_type, direc,
+        ignore_missing)
     avg_times = np.empty((len(materials), len(nprocs)), dtype=object)
     max_times = np.empty((len(materials), len(nprocs)), dtype=object)
     min_times = np.empty((len(materials), len(nprocs)), dtype=object)
