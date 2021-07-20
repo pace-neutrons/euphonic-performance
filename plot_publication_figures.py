@@ -202,7 +202,12 @@ for i, mat in enumerate(materials):
 axes[0].set_ylabel('Fraction of function time')
 handles, labels = axes[1].get_legend_handles_labels()
 # Put a legend below center axis
-axes[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.19), ncol=4)
+# Position based on number of subplots
+if len(materials)%2 == 0:
+    legend_x = 1.0
+else:
+    legend_x = 0.5
+axes[(len(materials) - 1)//2].legend(loc='upper center', bbox_to_anchor=(legend_x, -0.19), ncol=4)
 fig.text(0.5, 0.11, 'Number of Processors', ha='center')
 plt.savefig('figures/cext_prof.pdf')
 
