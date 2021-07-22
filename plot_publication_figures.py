@@ -9,7 +9,8 @@ from read_profile import (get_all_prof, get_all_reduced_prof,
                           get_all_reduced_parallel_func_prof)
 
 castep_materials = ['Nb-181818-s0.5-NCP19-vib-disp', 'quartz', 'La2Zr2O7']
-phonopy_materials = ['Al']
+#phonopy_materials = ['Al']
+phonopy_materials = []
 materials = castep_materials + phonopy_materials
 castep_material_labels = ['Niobium', 'Quartz', '$\mathrm{La_2Zr_2O_7}$']
 phonopy_material_labels = ['Aluminium']
@@ -32,7 +33,7 @@ def reduce_parallel_prof(parallel_times, op='mean'):
     return reduced_time
 
 # Print table comparing interpolation vs. sf times
-avg_interpolate, _, _, _ = get_all_reduced_prof(
+avgt_eupy, _, _, _ = get_all_reduced_prof(
         materials, nprocs=[1], direc='euphonic_0.6.1', file_type='timeit',
         suffix='-noc-sf', func_name='calculate_qpoint_phonon_modes')
 avg_sf, _, _, _ = get_all_reduced_prof(
@@ -40,7 +41,7 @@ avg_sf, _, _, _ = get_all_reduced_prof(
         suffix='-noc-sf', func_name='calculate_structure_factor')
 print(f'|{"Material":30}|{"Interpolation":13}|{"Structure Factor":16}|')
 for i in range(len(materials)):
-    print(f'|{materials[i]:30}|{avg_interpolate[i][0]:13.4f}|{avg_sf[i][0]:16.4f}|')
+    print(f'|{materials[i]:30}|{avgt_eupy[i][0]:13.4f}|{avg_sf[i][0]:16.4f}|')
 
 
 # Print table comparing total serial CASTEP phonons time vs. write times
@@ -83,9 +84,10 @@ avgt_castep = (avgt_phonon_calc_r
                - avgt_recip_to_real_r)
 
 # Now get Euphonic interpolation times with/without C
-avgt_eupy, _, _, _ = get_all_reduced_prof(
-        materials, [1], direc='euphonic_0.6.1', file_type='timeit',
-        suffix='-noc', func_name='calculate_qpoint_phonon_modes')
+# Just use time from '-noc-sf'
+#avgt_eupy, _, _, _ = get_all_reduced_prof(
+#        materials, [1], direc='euphonic_0.6.1', file_type='timeit',
+#        suffix='-noc', func_name='calculate_qpoint_phonon_modes')
 avgt_eu, _, _, _ = get_all_reduced_prof(
         materials, nprocs, direc='euphonic_0.6.1', file_type='timeit',
         func_name='calculate_qpoint_phonon_modes')
@@ -116,21 +118,21 @@ labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: 'NQ$A'.index(t
 lgd = ax.legend(handles, labels, loc='upper left', bbox_to_anchor=(1, 1.02))
 plt.savefig('figures/walltime_compare.pdf', bbox_inches='tight')
 
-# Print Euphonic script time for 1 procs for C/Python
-print(f'\nEuphonic script time for 1 proc in Python:')
+# Print Euphonic calculate_qpoint_phonon_modes time for 1 procs for C/Python
+print(f'\nEuphonic calculate_qpoint_phonon_modes time for 1 proc in Python:')
 for i in range(len(materials)):
     print(f'{materials[i]} {avgt_eupy[i][0]}')
-print(f'\nEuphonic script time for 1 proc in C:')
+print(f'\nEuphonic calculate_qpoint_phonon_modes time for 1 proc in C:')
 for i in range(len(materials)):
     print(f'{materials[i]} {avgt_eu[i][0]}')
 
 # Print Euphonic & CASTEP script time for 24 procs
-print(f'\nEuphonic script time for 24 procs:')
+print(f'\nEuphonic calculate_qpoint_phonon_modes time for 24 procs:')
 for i in range(len(materials)):
     print(f'{materials[i]} {avgt_eu[i][-1]}')
-print(f'\nCASTEP phonons time for 24 procs:')
+print(f'\nCASTEP phonon_calculate time for 24 procs (no subtraction):')
 for i in range(len(castep_materials)):
-    print(f'{materials[i]} {avgt_castep[i][-1]}')
+    print(f'{materials[i]} {phonon_times[i][-1]}')
 
 # Read timing + C extension profiling for 250k qpts
 cext_kwargs = {'direc': 'euphonic_0.6.1', 'suffix': '-cext-250k'}
