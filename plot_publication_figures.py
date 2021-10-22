@@ -232,14 +232,19 @@ with plt.style.context('pub.mplstyle'):
         axes[i].set_position([box.x0, box.y0 + box.height * 0.15,
                               box.width, box.height * 0.85])
     axes[0].set_ylabel('Fraction of function time')
+
     handles, labels = axes[1].get_legend_handles_labels()
+    # Make legend appear as a block of colour rather than a line
+    patch_handles = [Patch(color=colour, alpha=0.4) for colour in cext_colours]
     # Put a legend below center axis
     # Position based on number of subplots
     if len(materials)%2 == 0:
         legend_x = 1.0
     else:
         legend_x = 0.5
-    axes[(len(materials) - 1)//2].legend(loc='upper center', bbox_to_anchor=(legend_x, -0.19), ncol=4)
+    axes[(len(materials) - 1)//2].legend(
+            patch_handles, labels,
+            loc='upper center', bbox_to_anchor=(legend_x, -0.19), ncol=4)
     fig.text(0.5, 0.11, 'Number of Processors', ha='center')
     plt.savefig('figures/cext_prof.png')
 
@@ -248,5 +253,5 @@ parallel_cext_for, maxt, mint = get_all_reduced_parallel_func_prof(
 cext_for = reduce_parallel_prof(parallel_cext_for)
 print(f'\n\nTime in parallel C for Nb, 24 procs: {cext_for[2, -1]}')
 
-plt.show()
+#plt.show()
 
