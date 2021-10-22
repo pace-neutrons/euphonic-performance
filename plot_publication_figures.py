@@ -2,6 +2,8 @@ import matplotlib as mpl
 #mpl.rcParams['font.family'] = 'serif'
 #mpl.rcParams['mathtext.fontset'] = 'dejavuserif'
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 import numpy as np
 
 from read_profile import (get_all_prof, get_all_reduced_prof,
@@ -18,6 +20,7 @@ material_labels = castep_material_labels + phonopy_material_labels
 nprocs = [1, 2, 4, 8, 12, 16, 24]
 
 figsize_1col = (3.48, 2.5)
+figsize_1col_tall = (3.48, 3.)
 figsize_1p5col = (4.72, 2.83)
 figsize_2col = (7.09, 2.36)
 
@@ -103,7 +106,7 @@ avgt_phonopy, _, _, _ = get_all_reduced_prof(
 
 colours = ['tab:cyan', 'orange', 'm', 'darkgreen']
 with plt.style.context('pub.mplstyle'):
-    fig, ax = plt.subplots(1, figsize=figsize_1col)
+    fig, ax = plt.subplots(1, figsize=figsize_1col_tall)
     for i in range(len(castep_materials)):
             ax.plot(nprocs, avgt_castep[i], label=castep_material_labels[i] + ' CASTEP', ls='--', color=colours[i])
     for i in range(len(phonopy_materials)):
@@ -117,10 +120,29 @@ with plt.style.context('pub.mplstyle'):
     ax.set_yscale('log')
     ax.set_xlabel('Number of Processors')
     ax.set_ylabel('Wall Time (s)')
-    handles, labels = ax.get_legend_handles_labels()
-    # Put legend labels in order 'Nb, Quartz, lzo, Al'
-    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: 'NQ$A'.index(t[0][0])))
-    lgd = ax.legend(handles, labels, loc='upper left', bbox_to_anchor=(1, 1.02))
+    # Create custom legend
+    material_lines = [Patch(color=colour) for colour in colours[:len(castep_materials)]]
+    interpolation_lines = [Line2D([0], [0], color='k', ls='--'),
+                           Line2D([0], [0], color='k', ls='-'),
+                           Line2D([0], [0], color='k', ls='None', marker='x')]
+    lgd = ax.legend(material_lines + interpolation_lines,
+                    castep_material_labels + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
+#    material_title = Line2D([], [], marker='None', ls='None')
+#    interpolation_title = Line2D([], [], marker='None', ls='None')
+#    blank = Patch(visible=False)
+#    handles = ([material_title]
+#               + [blank]*(len(material_lines) - 1)
+#               + [interpolation_title]
+#               + [blank]*(len(interpolation_lines) - 1)
+#               + material_lines
+#               + interpolation_lines)
+#    labels = (['Material']
+#             + ['']*(len(material_lines) - 1)
+#             + ['Interpolation Method']
+#             + ['']*(len(interpolation_lines) - 1)
+#             + castep_material_labels
+#             + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
+#    lgd = ax.legend(handles, labels, loc='upper right', ncol=2)
     plt.savefig('figures/walltime_compare.png')
 
 # Print Euphonic calculate_qpoint_phonon_modes time for 1 procs for C/Python
