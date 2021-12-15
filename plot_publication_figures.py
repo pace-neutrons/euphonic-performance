@@ -104,6 +104,7 @@ avgt_phonopy, _, _, _ = get_all_reduced_prof(
         phonopy_materials, nprocs=[1], direc='phonopy', file_type='timeit',
         func_name='run_qpoints')
 
+# Plot Euphonic vs. CASTEP timings
 colours = ['tab:cyan', 'orange', 'm', 'darkgreen']
 with plt.style.context('pub.mplstyle'):
     fig, ax = plt.subplots(1, figsize=figsize_1col_tall)
@@ -127,22 +128,6 @@ with plt.style.context('pub.mplstyle'):
                            Line2D([0], [0], color='k', ls='None', marker='x')]
     lgd = ax.legend(material_lines + interpolation_lines,
                     castep_material_labels + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
-#    material_title = Line2D([], [], marker='None', ls='None')
-#    interpolation_title = Line2D([], [], marker='None', ls='None')
-#    blank = Patch(visible=False)
-#    handles = ([material_title]
-#               + [blank]*(len(material_lines) - 1)
-#               + [interpolation_title]
-#               + [blank]*(len(interpolation_lines) - 1)
-#               + material_lines
-#               + interpolation_lines)
-#    labels = (['Material']
-#             + ['']*(len(material_lines) - 1)
-#             + ['Interpolation Method']
-#             + ['']*(len(interpolation_lines) - 1)
-#             + castep_material_labels
-#             + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
-#    lgd = ax.legend(handles, labels, loc='upper right', ncol=2)
     plt.savefig('figures/walltime_compare.png')
 
 # Print Euphonic calculate_qpoint_phonon_modes time for 1 procs for C/Python
