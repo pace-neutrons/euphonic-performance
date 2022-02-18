@@ -106,25 +106,31 @@ avgt_phonopy, _, _, _ = get_all_reduced_prof(
 
 # Plot Euphonic vs. CASTEP timings
 colours = ['tab:cyan', 'orange', 'm', 'darkgreen']
+markerstyle = {'ms':  3}
+castep_style = {'ls': '--', 'marker': '^', **markerstyle}
+euphonic_style = {'marker': 'o', **markerstyle}
 with plt.style.context('pub.mplstyle'):
     fig, ax = plt.subplots(1, figsize=figsize_1col_tall)
     for i in range(len(castep_materials)):
-            ax.plot(nprocs, avgt_castep[i], label=castep_material_labels[i] + ' CASTEP', ls='--', color=colours[i])
+            ax.plot(nprocs, avgt_castep[i], label=castep_material_labels[i] + ' CASTEP', color=colours[i],
+                    **castep_style)
     for i in range(len(phonopy_materials)):
         ax.scatter([1], avgt_phonopy[i], label=phonopy_material_labels[i] + ' Phonopy',
                    color=colours[len(castep_materials) + i], marker='P', clip_on=False)
     for i in range(len(materials)):
-        ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i])
+        ax.plot(nprocs, avgt_eu[i], label=material_labels[i] + ' Euphonic C', color=colours[i],
+                **euphonic_style)
         ax.scatter([1], avgt_eupy[i], label=material_labels[i] + ' Euphonic serial Python',
                    color=colours[i], marker='x', clip_on=False)
-    ax.set_xlim(1, 24)
+    ax.set_xlim(0, 24)
+    ax.set_xticks(nprocs)
     ax.set_yscale('log')
     ax.set_xlabel('Number of Processors')
     ax.set_ylabel('Wall Time (s)')
     # Create custom legend
     material_lines = [Patch(color=colour) for colour in colours[:len(castep_materials)]]
-    interpolation_lines = [Line2D([0], [0], color='k', ls='--'),
-                           Line2D([0], [0], color='k', ls='-'),
+    interpolation_lines = [Line2D([0], [0], color='k', **castep_style),
+                           Line2D([0], [0], color='k', **euphonic_style),
                            Line2D([0], [0], color='k', ls='None', marker='x')]
     lgd = ax.legend(material_lines + interpolation_lines,
                     castep_material_labels + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
@@ -142,6 +148,9 @@ for i in range(len(materials)):
 print(f'\nEuphonic calculate_qpoint_phonon_modes time for 24 procs:')
 for i in range(len(materials)):
     print(f'{materials[i]} {avgt_eu[i][-1]}')
+print(f'\nCASTEP phonon_calculate time for 24 procs:')
+for i in range(len(castep_materials)):
+    print(f'{materials[i]} {avgt_castep[i][-1]}')
 print(f'\nCASTEP phonon_calculate time for 24 procs (no subtraction):')
 for i in range(len(castep_materials)):
     print(f'{materials[i]} {phonon_times[i][-1]}')
@@ -169,7 +178,9 @@ cext_diag_dyn_mat = reduce_parallel_prof(parallel_cext_diag_dyn_mat)
 with plt.style.context('pub.mplstyle'):
     fig, ax = plt.subplots(1, figsize=figsize_1col)
     for i in range(len(materials)):
-        ax.plot(nprocs, cext_calc_ph[i], label=material_labels[i], color=colours[i])
+        ax.plot(nprocs, cext_calc_ph[i], label=material_labels[i], color=colours[i],
+                **euphonic_style)
+    ax.set_xticks(nprocs)
     ax.set_xlim(1, 24)
     ax.set_yscale('log')
     ax.set_xlabel('Number of Processors')
@@ -182,8 +193,9 @@ with plt.style.context('pub.mplstyle'):
     fig, ax = plt.subplots(1, figsize=figsize_1col)
     for i in range(len(materials)):
         ax.plot(nprocs, cext_calc_ph[i,0]/cext_calc_ph[i], color=colours[i],
-                label=material_labels[i])
+                label=material_labels[i], **euphonic_style)
     ax.plot([1,24], [1,24], color='k', ls='--', lw='1', label='Perfect scaling')
+    ax.set_xticks(nprocs)
     ax.set_xlim(1, 24)
     ax.set_ylim(1, 24)
     ax.set_xlabel('Number of Processors')
@@ -210,6 +222,7 @@ with plt.style.context('pub.mplstyle'):
         axes[i].plot(nprocs, frac_par, label='Remainder of Parallel Section', color=cext_colours[3])
         axes[i].fill_between(nprocs, frac_diag_dyn, frac_par, color=cext_colours[3], alpha=0.4)
 
+        axes[i].set_xticks(nprocs)
         axes[i].set_xlim(1, 24)
         axes[i].set_ylim(0, 1)
         axes[i].set_title(material_labels[i])
