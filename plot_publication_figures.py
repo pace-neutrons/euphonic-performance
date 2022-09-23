@@ -104,7 +104,7 @@ avgt_phonopy, _, _, _ = get_all_reduced_prof(
         phonopy_materials, nprocs=[1], direc='phonopy', file_type='timeit',
         func_name='run_qpoints')
 
-# Plot Euphonic vs. CASTEP timings
+# Plot Euphonic vs. CASTEP interpolation time
 colours = ['tab:cyan', 'orange', 'm', 'darkgreen']
 markerstyle = {'ms':  3}
 castep_style = {'ls': '--', 'marker': '^', **markerstyle}
@@ -132,8 +132,22 @@ with plt.style.context('pub.mplstyle'):
     interpolation_lines = [Line2D([0], [0], color='k', **castep_style),
                            Line2D([0], [0], color='k', **euphonic_style),
                            Line2D([0], [0], color='k', ls='None', marker='x')]
-    lgd = ax.legend(material_lines + interpolation_lines,
-                    castep_material_labels + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
+    material_title = Line2D([], [], marker='None', ls='None')
+    interpolation_title = Line2D([], [], marker='None', ls='None')
+    blank = Patch(visible=False)
+    handles = ([material_title]
+               + [blank]*(len(material_lines) - 1)
+               + [interpolation_title]
+               + [blank]*(len(interpolation_lines) - 1)
+               + material_lines
+               + interpolation_lines)
+    labels = (['Material']
+             + ['']*(len(material_lines) - 1)
+             + ['Interpolation Method']
+             + ['']*(len(interpolation_lines) - 1)
+             + castep_material_labels
+             + ['CASTEP', 'Euphonic C', 'Euphonic Serial Python'])
+    lgd = ax.legend(handles, labels, loc='upper right', ncol=2)
     plt.savefig('figures/walltime_compare.png')
 
 # Print Euphonic calculate_qpoint_phonon_modes time for 1 procs for C/Python
@@ -148,9 +162,6 @@ for i in range(len(materials)):
 print(f'\nEuphonic calculate_qpoint_phonon_modes time for 24 procs:')
 for i in range(len(materials)):
     print(f'{materials[i]} {avgt_eu[i][-1]}')
-print(f'\nCASTEP phonon_calculate time for 24 procs:')
-for i in range(len(castep_materials)):
-    print(f'{materials[i]} {avgt_castep[i][-1]}')
 print(f'\nCASTEP phonon_calculate time for 24 procs (no subtraction):')
 for i in range(len(castep_materials)):
     print(f'{materials[i]} {phonon_times[i][-1]}')
@@ -252,4 +263,13 @@ cext_for = reduce_parallel_prof(parallel_cext_for)
 print(f'\n\nTime in parallel C for Nb, 24 procs: {cext_for[2, -1]}')
 
 #plt.show()
+print(f'\nCASTEP graph times')
+for i in range(len(castep_materials)):
+    print(f'{materials[i]} {avgt_castep[i][:]}')
+print(f'\nEuphonic c graph times')
+for i in range(len(castep_materials)):
+    print(f'{materials[i]} {avgt_eu[i][:]}')
+print(f'\nEuphonic Py times')
+for i in range(len(castep_materials)):
+    print(f'{materials[i]} {avgt_eupy[i]}')
 
